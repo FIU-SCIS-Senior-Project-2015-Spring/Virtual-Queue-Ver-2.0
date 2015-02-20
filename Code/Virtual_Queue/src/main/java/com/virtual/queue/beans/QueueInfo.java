@@ -8,7 +8,8 @@ public class QueueInfo {
 	private int capacity;
 	private int waitingTime;
 	private Date registeredDt;
-
+	
+	
 	public long getQueueId() {
 		return queueId;
 	}

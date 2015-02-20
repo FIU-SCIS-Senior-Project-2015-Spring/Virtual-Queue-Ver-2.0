@@ -7,6 +7,7 @@ import com.virtual.queue.beans.QueueInfo;
 import com.virtual.queue.beans.UserQueueInfo;
 import com.virtual.queue.beans.RideInfo;
 import com.virtual.queue.beans.User;
+import com.virtual.queue.beans.Queue;
 
 public interface QueueDao {
 	public List<UserQueueInfo> pullInfo(long rideId);
@@ -26,5 +27,7 @@ public interface QueueDao {
 	public List<Long> getUserToRemoveFromQueue(Long rideId);
 
 	LinkedList<Long> getAllUserQueueForRide(long rideId, int interval);
+
+	LinkedList<Queue> getListRideInQueue(long rideId);
 	
 }

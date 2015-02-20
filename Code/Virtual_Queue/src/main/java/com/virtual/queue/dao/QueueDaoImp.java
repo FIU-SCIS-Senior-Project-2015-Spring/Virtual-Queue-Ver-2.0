@@ -15,6 +15,7 @@ import com.virtual.queue.beans.Coordinate;
 import com.virtual.queue.beans.QueueInfo;
 import com.virtual.queue.beans.RideInfo;
 import com.virtual.queue.beans.User;
+import com.virtual.queue.beans.Queue;
 import com.virtual.queue.beans.UserQueueInfo;
 import com.virtual.queue.beans.VenueInfo;
 import com.virtual.queue.exception.NotificationException;
@@ -26,6 +27,7 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 	private static final String GET_QUEUE_INFO = "SELECT u.user_id,u.user_name, u.first_name, u.last_name, u.phone_number, u.email , r.ride_duraction, r.ride_name "
 			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq "
 			+ " WHERE r.ride_id = ? AND r.myqueue_id = uq.queue_id AND uq.user_id = u.user_id ";
+	private static final String GET_RIDE_IN_QUEUE_INFO = "Select * From queue where activity_id=";
 	private static final String GET_QUEUE_INFO_ALL = "SELECT u.user_name, u.first_name, u.last_name, u.phone_number, u.email "
 			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq "
 			+ " WHERE  r.myqueue_id = uq.queue_id AND uq.user_id = u.user_id ";
@@ -214,6 +216,62 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 				user.setPhoneNumber(result.getString("phone_number"));
 				user.setEmail(result.getString("email"));
 				infoList.add(user);
+			}
+
+			result.close();
+			statement.close();
+		} catch (SQLException e) {
+			// TODO need to add log4j output
+			e.printStackTrace();
+
+		} catch (Exception ex) {
+
+			// TODO need to add log4j output
+			ex.printStackTrace();
+
+		} finally {
+
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return infoList;
+	}
+	
+	//This returns list of Queues specific to the rideId (aka Activity_id)
+	@Override
+	public LinkedList<Queue> getListRideInQueue(long activity_id) {
+
+		LinkedList<Queue> infoList = new LinkedList<Queue>();
+		Connection conn = getConnection();
+		try {
+			PreparedStatement statement = conn.prepareStatement(GET_RIDE_IN_QUEUE_INFO+activity_id);
+
+			// TODO:set ride id from job scheduler.
+			//statement.setLong(1, activity_id);
+			// statement.setString(2, password);
+			// statement.setString(3, code);
+
+			ResultSet result = statement.executeQuery();
+			Queue queue = null;
+
+			while (result.next()) {
+
+				queue = new Queue();
+				queue.setVisitorId(result.getLong("visitor_id"));
+				queue.setActivityId(result.getLong("activity_id"));
+				queue.setReservationTime(result.getString("reservation_time"));
+				//queue.setEstimatedTime(result.getString("last_name"));
+				//queue.setPhoneNumber(result.getString("phone_number"));
+				//queuer.setEmail(result.getString("email"));
+				infoList.add(queue);
 			}
 
 			result.close();

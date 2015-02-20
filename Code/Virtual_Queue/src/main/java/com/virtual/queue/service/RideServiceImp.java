@@ -52,8 +52,9 @@ public RideServiceImp(){}
 		for (RideInfo info : list) {
 			// get all data to calculate waiting time.
 
-			int count = queueDao.getAllUserQueueForRide(info.getRideId())
-					.size();
+//			int count = queueDao.getAllUserQueueForRide(info.getRideId())
+//					.size();
+			int count = queueDao.getListRideInQueue(info.getRideId()).size();
 			int capacity = info.getCapacity();
 			int interval = info.getInterval();
 

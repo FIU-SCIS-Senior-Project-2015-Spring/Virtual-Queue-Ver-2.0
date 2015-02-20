@@ -58,7 +58,7 @@ public class QueueUtil {
 		if (rideCap == 0)
 			return -1;
 		if (topbot) {
-			wait = (int) Math.floor((count / rideCap)) * duration;
+			wait = 5;//(int) Math.floor((count / rideCap)) * duration;
 		} else {
 			wait = (int) Math.ceil((count / rideCap)) * duration;
 		}
