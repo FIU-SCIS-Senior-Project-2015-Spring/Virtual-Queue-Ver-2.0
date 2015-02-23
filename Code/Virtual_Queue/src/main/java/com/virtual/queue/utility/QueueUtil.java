@@ -66,4 +66,19 @@ public class QueueUtil {
 		return wait;
 
 	}
+	public static int getWaitingTime2(int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
+			boolean topbot) {
+		int wait = 0;
+		if (maxGuestPerEvent == 0)
+			return -1;
+		if (topbot) {
+			wait = (maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+		} else {
+			wait = (maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+		}
+
+		return wait;
+
+	}
+	
 }

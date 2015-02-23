@@ -58,8 +58,9 @@ public RideServiceImp(){}
 			int capacity = info.getCapacity();
 			int interval = info.getInterval();
 
-			long waitingTime = QueueUtil.getWaitingTime(count, capacity,
-					interval, true);
+			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
+					//interval, true);
+			long waitingTime = count*QueueUtil.getWaitingTime2(info.getCapacity(), info.getInterval(), info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
 			//long waitingTime = 5;
 			info.setWaitingTime(waitingTime);
 

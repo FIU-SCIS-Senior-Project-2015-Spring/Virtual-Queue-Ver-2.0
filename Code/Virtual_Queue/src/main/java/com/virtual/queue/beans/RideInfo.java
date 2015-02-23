@@ -1,6 +1,7 @@
 package com.virtual.queue.beans;
 
 public class RideInfo {
+	//this class is used for activities table
 	
 	private String description;
 	private long startTime;
@@ -12,7 +13,10 @@ public class RideInfo {
 	private String rName;
 	private Coordinate coordinate;
 	private double waitingTime;
-
+	private int timePerEvent;
+	private int entryTime;
+	private int exitTime;
+	
 	public String getrName() {
 		return rName;
 	}
@@ -84,5 +88,36 @@ public class RideInfo {
 	public void setWaitingTime(double waitingTime) {
 		this.waitingTime = waitingTime;
 	}
+	
+	public int getTimePerEvent(){
+		return timePerEvent;
+	}
+	
+	public void setTimePerEvent(int timePerEvent){
+		this.timePerEvent = timePerEvent;
+	}
+	
+	public int getEntryTime(){
+		return entryTime;
+				
+	}
+	
+	public void setEntryTime(int entryTime){
+		this.entryTime = entryTime;
+	}
+	
+	public int getExitTime(){
+		return exitTime;
+	}
+	
+	public void setExitTime(int exitTime){
+		this.exitTime = exitTime;
+	}
+	
+	
 
 }
+
+
+
+

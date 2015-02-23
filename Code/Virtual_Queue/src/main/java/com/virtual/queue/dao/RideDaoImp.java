@@ -325,6 +325,9 @@ public class RideDaoImp extends BaseDao implements RideDao {
 				info2.setInterval(result.getInt("max_concurrent_event"));
 				info2.setCapacity(result.getInt("max_guest_per_event"));
 				info2.setRideId(result.getLong("activity_id"));
+				info2.setTimePerEvent(result.getInt("time_per_event"));
+				info2.setEntryTime(result.getInt("entry_time"));
+				info2.setExitTime(result.getInt("exit_time"));
 				BigDecimal lat = result.getBigDecimal("latitude");
 				BigDecimal lon = result.getBigDecimal("longitude");
 				info2.setCoordinate(new Coordinate(lat, lon));
