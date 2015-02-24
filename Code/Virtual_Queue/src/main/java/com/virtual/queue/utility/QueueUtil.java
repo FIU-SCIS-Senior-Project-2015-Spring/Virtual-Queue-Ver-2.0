@@ -58,7 +58,7 @@ public class QueueUtil {
 		if (rideCap == 0)
 			return -1;
 		if (topbot) {
-			wait = 5;//(int) Math.floor((count / rideCap)) * duration;
+			wait = (int) Math.floor((count / rideCap)) * duration;
 		} else {
 			wait = (int) Math.ceil((count / rideCap)) * duration;
 		}
@@ -66,18 +66,21 @@ public class QueueUtil {
 		return wait;
 
 	}
-	public static int getWaitingTime2(int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
+	public static long getWaitingTime2(int count, int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
 			boolean topbot) {
-		int wait = 0;
+		double wait = 0;
+		long result = 0;
 		if (maxGuestPerEvent == 0)
 			return -1;
 		if (topbot) {
-			wait = (maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+			wait = count*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+			result = (int) Math.ceil(wait);
 		} else {
-			wait = (maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+			wait = count*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+			result = (int) Math.ceil(wait);
 		}
 
-		return wait;
+		return result;
 
 	}
 	

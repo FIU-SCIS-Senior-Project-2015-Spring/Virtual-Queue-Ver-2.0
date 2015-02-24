@@ -60,7 +60,7 @@ public RideServiceImp(){}
 
 			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
 					//interval, true);
-			long waitingTime = count*QueueUtil.getWaitingTime2(info.getCapacity(), info.getInterval(), info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
 			//long waitingTime = 5;
 			info.setWaitingTime(waitingTime);
 

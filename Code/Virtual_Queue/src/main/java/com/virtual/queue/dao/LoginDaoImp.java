@@ -12,16 +12,19 @@ import org.springframework.stereotype.Repository;
 
 import com.virtual.queue.beans.Role;
 import com.virtual.queue.beans.User;
-
+// USED to login section of the website
 @Repository
 public class LoginDaoImp extends BaseDao implements LoginDao {
 
-	private static String GET_USER_SESSION = "SELECT u.user_name, u.user_password, "
-			+ "u.user_id, c.code_number, r.enabled, r.role_type, r.role_desc "
-			+ "FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Code c, VirtualQueueDB.UserRole ur, "
-			+ "VirtualQueueDB.Role r  WHERE  u.code_id = c.code_id AND u.user_id = ur.user_id "
-			+ "AND r.role_id = ur.role_id AND u.user_name = ? AND u.user_password = ? "
-			+ "AND  c.code_number= ?";
+//	private static String GET_USER_SESSION = "SELECT u.user_name, u.user_password, "
+//			+ "u.user_id, c.code_number, r.enabled, r.role_type, r.role_desc "
+//			+ "FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Code c, VirtualQueueDB.UserRole ur, "
+//			+ "VirtualQueueDB.Role r  WHERE  u.code_id = c.code_id AND u.user_id = ur.user_id "
+//			+ "AND r.role_id = ur.role_id AND u.user_name = ? AND u.user_password = ? "
+//			+ "AND  c.code_number= ?";
+	
+	private static String GET_USER_SESSION = "SELECT * FROM vqdatabase.patron p, vqdatabase.visitor v WHERE p.patron_id = v.patron_id AND"
+			+ " p.username = ? AND p.password = ? AND p.code_number = ?";
 	
 	private static String GET_ADMIN_SESSION = "SELECT u.user_name, u.user_password, u.user_id, r.enabled, r.role_type, r.role_desc "
 			+ "FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.UserRole ur, VirtualQueueDB.Role r  "
@@ -54,9 +57,9 @@ public class LoginDaoImp extends BaseDao implements LoginDao {
 
 			ResultSet result = statement.executeQuery();
 			while (result.next()) {
-				user.setUserName(result.getString("user_name"));
-				user.setUserid(result.getLong("user_id"));
-				user.setPassword(result.getString("user_password"));
+				user.setUserName(result.getString("username"));
+				user.setUserid(result.getLong("visitor_id"));
+				user.setPassword(result.getString("password"));
 				Role role = new Role();
 				role.setRoleType(result.getString("role_type"));
 				role.setRoleDesc(result.getString("role_desc"));

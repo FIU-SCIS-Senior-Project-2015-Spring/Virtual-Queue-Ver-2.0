@@ -30,8 +30,9 @@ public class UserDaoImp extends BaseDao implements UserDao {
 
 	private static String RESET_PASSWORD = "UPDATE VirtualQueueDB.VenueRegisteredUser SET user_password = ? WHERE user_id = ? ";
 
-	private static String GET_USER_BY_ID = "Select * from VirtualQueueDB.VenueRegisteredUser where user_id=?";
-
+	//private static String GET_USER_BY_ID = "Select * from VirtualQueueDB.VenueRegisteredUser where user_id=?";
+	private static String GET_USER_BY_ID = "Select * from vqdatabase.patron p, vqdatabase.visitor v where p.patron_id=v.visitor_id=?";
+			
 	private static final String DELETE_USER_FROM_QUEUE = "DELETE FROM VirtualQueueDB.UserQueue WHERE user_id= ? and queue_id=(Select myqueue_id From Ride where ride_id= ? )";
 	// add code and get code id.
 	private static final String ADD_CODE = "INSERT INTO VirtualQueueDB.Code (code_number,generated_dt) VALUES (?,?)";
@@ -529,15 +530,18 @@ public class UserDaoImp extends BaseDao implements UserDao {
 
 			if (result.next()) {
 
-				user.setFirstName(result.getString("first_name"));
-				user.setLastName(result.getString("last_name"));
-				user.setEmail(result.getString("email"));
-				user.setPassword(result.getString("user_password"));
-				user.setUserName(result.getString("user_name"));
-				user.setSecurityQuestion(result.getString("security_question"));
-				user.setSecurityAnswer(result.getString("security_answer"));
-				user.setPhoneNumber(result.getString("phone_number"));
-				user.setAge(result.getString("age"));
+				user.setFirstName(result.getString("name_first"));
+				user.setLastName(result.getString("name_last"));
+				user.setEmail(result.getString("contact_email"));
+				user.setPassword(result.getString("username"));
+				user.setUserName(result.getString("password"));
+				user.setPhoneNumber(result.getString("contact_phone"));
+				//user.setSecurityQuestion(result.getString("security_question"));
+				//user.setSecurityAnswer(result.getString("security_answer"));
+				//user.setAge(result.getString("age"));
+				user.setSecurityQuestion("Where were you born?");
+				user.setSecurityAnswer("Miami");
+				user.setAge("18");
 			}
 
 			result.close();
