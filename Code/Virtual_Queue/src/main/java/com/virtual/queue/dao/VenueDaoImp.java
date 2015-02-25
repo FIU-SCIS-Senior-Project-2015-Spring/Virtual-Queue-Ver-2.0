@@ -14,9 +14,10 @@ import com.virtual.queue.dao.VenueDao;
 @Repository
 public class VenueDaoImp extends BaseDao implements VenueDao {
 	
+//	private final static String GET_VENUE_INFO="SELECT  * "+
+//			" FROM VirtualQueueDB.Venue v WHERE v.venue_id  = ?";
 	private final static String GET_VENUE_INFO="SELECT  * "+
-			" FROM VirtualQueueDB.Venue v WHERE v.venue_id  = ?";
-	
+			" FROM vqdatabase.venue v WHERE v.venue_id  = ?";	
 	
 	@Override
 	public List<VenueInfo> getVenueInfo(long venueId) {
@@ -35,9 +36,11 @@ public class VenueDaoImp extends BaseDao implements VenueDao {
 				while (result.next()) {
 					
 					info2= new VenueInfo();
-					info2.setVenueName(result.getString("venue_name"));
-					info2.setStartTime(result.getLong("start_time"));
-					info2.setStartTime(result.getLong("end_time")); 
+					info2.setVenueName(result.getString("name"));
+					//start time and end time is not included in the current database
+					//so its set as a default values for now
+					info2.setStartTime(800);
+					info2.setEndTime(2200); 
 					list.add(info2); 
 				}
 				
@@ -66,12 +69,12 @@ public class VenueDaoImp extends BaseDao implements VenueDao {
 				
 				
 			}
-			VenueInfo vInfo= new VenueInfo();
-			vInfo.setStartTime(8);
-			vInfo.setEndTime(18);
-			vInfo.setVenueName("Paradise");
-			
-			list.add(vInfo);
+//			VenueInfo vInfo= new VenueInfo();
+//			vInfo.setStartTime(8);
+//			vInfo.setEndTime(18);
+//			vInfo.setVenueName("Paradise");
+//			
+//			list.add(vInfo);
 	return list;
 	
 	}

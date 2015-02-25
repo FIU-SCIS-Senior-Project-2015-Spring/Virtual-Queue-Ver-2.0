@@ -30,14 +30,17 @@ public class RideDaoImp extends BaseDao implements RideDao {
 	// TODO:take this from property file or DB option.
 	private final static long VENUE_ID = 1;
 
-	private static final String GET_RIDE_INFO_BY_USERID = "SELECT r.ride_name, r.ride_duraction ,r.ride_id, r.ride_capacity ,r.latitude, r.longitude FROM  VirtualQueueDB.UserQueue q, Ride r where q.user_id =? and r.myqueue_id=queue_id order by q.registered_time asc ";
+	//private static final String GET_RIDE_INFO_BY_USERID = "SELECT r.ride_name, r.ride_duraction ,r.ride_id, r.ride_capacity ,r.latitude, r.longitude FROM  VirtualQueueDB.UserQueue q, Ride r where q.user_id =? and r.myqueue_id=queue_id order by q.registered_time asc ";
+	private static final String GET_RIDE_INFO_BY_USERID = "SELECT * FROM  vqdatabase.queue q, vqdatabase.activity a where q.visitor_id =? and a.activity_id=q.activity_id order by q.time_reservation_made asc ";
 
 	private static final String ADD_USER_TO_RIDE = "INSERT INTO VirtualQueueDB.USerQueue (queue_id,user_id,registered_time)VALUES ((Select myqueue_id From Ride where ride_id=? ),?,NOW());";
 
 	private static final String GET_RIDE_ALL = "SELECT r.ride_name, r.ride_duraction ,r.ride_id, r.ride_capacity ,r.latitude, r.longitude FROM  Ride r  ";
 
-	private static final String GET_RIDE_INFO_BY_ID = "SELECT r.ride_name, r.ride_duraction, n.notification_time,n.notification_wait , r.ride_capacity ,r.ride_id , r.latitude, r.longitude "
-			+ " FROM VirtualQueueDB.Ride r, VirtualQueueDB.Notification n WHERE r.notification_id = n.notification_id AND n.notification_id = ? AND r.ride_id= ?";
+//	private static final String GET_RIDE_INFO_BY_ID = "SELECT r.ride_name, r.ride_duraction, n.notification_time,n.notification_wait , r.ride_capacity ,r.ride_id , r.latitude, r.longitude "
+//			+ " FROM VirtualQueueDB.Ride r, VirtualQueueDB.Notification n WHERE r.notification_id = n.notification_id AND n.notification_id = ? AND r.ride_id= ?";
+	//notification is currently not implemented so getRidebyID will only get default values for notifications
+	private static final String GET_RIDE_INFO_BY_ID = "SELECT * FROM vqdatabase.activity a WHERE a.activity_id= ?";
 
 	private static final String GET_ALL_ACTIVITY = "SELECT * FROM activity";
 	
@@ -138,12 +141,12 @@ public class RideDaoImp extends BaseDao implements RideDao {
 			while (result.next()) {
 
 				info2 = new RideInfo();
-				info2.setrName(result.getString("ride_name"));
+				info2.setrName(result.getString("name_act"));
 				info2.setStartTime(startTime);
-				info2.setInterval(result.getInt("ride_duraction"));
+				info2.setInterval(result.getInt("time_per_event"));
 				info2.setEndTime(endTime);
-				info2.setCapacity(result.getInt("ride_capacity"));
-				info2.setRideId(result.getLong("ride_id"));
+				info2.setCapacity(result.getInt("max_guest_per_event"));
+				info2.setRideId(result.getLong("activity_id"));
 				BigDecimal lat = result.getBigDecimal("latitude");
 				BigDecimal lon = result.getBigDecimal("longitude");
 				info2.setCoordinate(new Coordinate(lat, lon));
@@ -200,19 +203,19 @@ public class RideDaoImp extends BaseDao implements RideDao {
 		try {
 
 			PreparedStatement statement = con.prepareStatement(GET_RIDE_INFO_BY_ID);
-			statement.setInt(1, 1);
-			statement.setLong(2, rideId);
+			statement.setInt(1, (int)rideId);
+			//statement.setLong(2, rideId);
 
 			ResultSet result = statement.executeQuery();
 
 			if (result.next()) {
 				info2 = new RideInfo();
-				info2.setrName(result.getString("ride_name"));
+				info2.setrName(result.getString("name_act"));
 				info2.setStartTime(startTime);
-				info2.setInterval(result.getInt("ride_duraction"));
+				info2.setInterval(result.getInt("time_per_event"));
 				info2.setEndTime(endTime);
-				info2.setCapacity(result.getInt("ride_capacity"));
-				info2.setRideId(result.getLong("ride_id"));
+				info2.setCapacity(result.getInt("max_guest_per_event"));
+				info2.setRideId(result.getLong("activity_id"));
 
 				info2.setCoordinate(new Coordinate(result
 						.getBigDecimal("latitude"), result
