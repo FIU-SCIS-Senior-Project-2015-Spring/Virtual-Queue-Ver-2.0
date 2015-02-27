@@ -24,9 +24,10 @@ import com.virtual.queue.exception.NotificationException;
 @Transactional
 public class QueueDaoImp extends BaseDao implements QueueDao {
 
-	private static final String GET_QUEUE_INFO = "SELECT u.user_id,u.user_name, u.first_name, u.last_name, u.phone_number, u.email , r.ride_duraction, r.ride_name "
-			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq "
-			+ " WHERE r.ride_id = ? AND r.myqueue_id = uq.queue_id AND uq.user_id = u.user_id ";
+//	private static final String GET_QUEUE_INFO = "SELECT u.user_id,u.user_name, u.first_name, u.last_name, u.phone_number, u.email , r.ride_duraction, r.ride_name "
+//			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq "
+//			+ " WHERE r.ride_id = ? AND r.myqueue_id = uq.queue_id AND uq.user_id = u.user_id ";
+	private static final String GET_QUEUE_INFO = "SELECT * FROM  vqdatabase.queue q, activity a, vqdatabase.patron p, vqdatabase.visitor v where q.activity_id =? and a.activity_id=q.activity_id and v.visitor_id=q.visitor_id ";
 	private static final String GET_RIDE_IN_QUEUE_INFO = "Select * From queue where activity_id=";
 	private static final String GET_QUEUE_INFO_ALL = "SELECT u.user_name, u.first_name, u.last_name, u.phone_number, u.email "
 			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq "
@@ -34,13 +35,16 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 
 	// private static final String GET_QUEUE_BY_RIDEID = null;
 
-	private static final String GET_QUEUE = "SELECT q.myqueue_id,q.waiting_time,q.queue_capacity,r.ride_duraction FROM VirtualQueueDB.MyQueue q ,VirtualQueueDB.Ride r where q.myqueue_id= r.myqueue_id   AND  r.ride_id =? ";
+	//private static final String GET_QUEUE = "SELECT q.myqueue_id,q.waiting_time,q.queue_capacity,r.ride_duraction FROM VirtualQueueDB.MyQueue q ,VirtualQueueDB.Ride r where q.myqueue_id= r.myqueue_id   AND  r.ride_id =? ";
+	private static final String GET_QUEUE = "SELECT * FROM vqdatabase.queue q ,vqdatabase.activity a where q.activity_id= a.activity_id   AND  a.activity_id =? ";
 
 	private static final String DELETE_ALL_FROM_QUEUE = "DELETE FROM VirtualQueueDB.UserQueue WHERE queue_id=(Select myqueue_id From Ride where ride_id= ? )";
 
 	private final static long VENUE_ID = 1;
 
-	private static final String GET_RIDE_INFO_BY_USERID = "SELECT r.ride_name, r.ride_duraction , r.ride_capacity, r.ride_id,   r.longitude, r.latitude   FROM  VirtualQueueDB.UserQueue q, Ride r where q.user_id =? and r.myqueue_id=queue_id order by q.registered_time asc ";
+	//private static final String GET_RIDE_INFO_BY_USERID = "SELECT r.ride_name, r.ride_duraction , r.ride_capacity, r.ride_id,   r.longitude, r.latitude   FROM  VirtualQueueDB.UserQueue q, Ride r where q.user_id =? and r.myqueue_id=queue_id order by q.registered_time asc ";
+	private static final String GET_RIDE_INFO_BY_USERID = "SELECT * FROM  vqdatabase.queue q, activity a where q.visitor_id =? and a.activity_id=q.activity_id order by q.time_reservation_made asc ";
+
 	private static final String GET_QUEUE_INFO_INTERVAL = "SELECT u.user_id  FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq WHERE r.ride_id = ? AND r.myqueue_id = uq.queue_id AND uq.user_id = u.user_id order by uq.registered_time";
 	private static final String DELETE_USER_FROM_QUEUE = "DELETE FROM VirtualQueueDB.UserQueue WHERE queue_id=(Select myqueue_id From Ride where ride_id= ?) AND user_id = ? ";
 
@@ -209,12 +213,12 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 			while (result.next()) {
 
 				user = new User();
-				user.setUserid(result.getLong("user_id"));
-				user.setEmail(result.getString("user_name"));
-				user.setFirstName(result.getString("first_name"));
-				user.setLastName(result.getString("last_name"));
-				user.setPhoneNumber(result.getString("phone_number"));
-				user.setEmail(result.getString("email"));
+				user.setUserid(result.getLong("visitor_id"));
+				user.setEmail(result.getString("username"));
+				user.setFirstName(result.getString("name_first"));
+				user.setLastName(result.getString("name_last"));
+				user.setPhoneNumber(result.getString("contact_phone"));
+				user.setEmail(result.getString("contact_email"));
 				infoList.add(user);
 			}
 
@@ -347,7 +351,7 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 
 		return infoList;
 	}
-
+//Method used to find wait time for the specific users
 	@Override
 	public QueueInfo getQueueInfoByRideId(long rideId) {
 
@@ -362,10 +366,12 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 
 			if (result.next()) {
 
-				info.setCapacity(result.getInt("queue_capacity"));
-				info.setQueueId(result.getInt("myqueue_id"));
-				info.setWaitingTime(result.getInt("waiting_time"));
-
+//				info.setCapacity(result.getInt("queue_capacity"));
+//				info.setQueueId(result.getInt("myqueue_id"));
+//				info.setWaitingTime(result.getInt("waiting_time"));
+				info.setCapacity(result.getInt("max_guest_per_event"));
+				info.setQueueId(result.getInt("activity_id"));
+				info.setWaitingTime(result.getInt("estimated_time"));
 			}
 
 			result.close();
@@ -513,12 +519,13 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 			while (result.next()) {
 
 				info2 = new RideInfo();
-				info2.setrName(result.getString("ride_name"));
+				info2.setrName(result.getString("name_act"));
 				info2.setStartTime(startTime);
-				info2.setInterval(result.getInt("ride_duraction"));
+				info2.setInterval(result.getInt("time_per_event"));
+				//info2.setInterval(5);
 				info2.setEndTime(endTime);
-				info2.setCapacity(result.getInt("ride_capacity"));
-				info2.setRideId(result.getLong("ride_id"));
+				info2.setCapacity(result.getInt("max_guest_per_event"));
+				info2.setRideId(result.getLong("activity_id"));
 				info2.setCoordinate(new Coordinate(result
 						.getBigDecimal("latitude"), result
 						.getBigDecimal("longitude")));

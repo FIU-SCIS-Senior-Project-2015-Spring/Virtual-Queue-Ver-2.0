@@ -5,7 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +112,7 @@ public class RideDaoImp extends BaseDao implements RideDao {
 		return info;
 
 	}
-
+//This is where Spicific Users ride timer is saved.
 	@Override
 	public List<RideInfo> getRideByUser(Long userId)
 			throws NotificationException {
@@ -143,7 +146,29 @@ public class RideDaoImp extends BaseDao implements RideDao {
 				info2 = new RideInfo();
 				info2.setrName(result.getString("name_act"));
 				info2.setStartTime(startTime);
-				info2.setInterval(result.getInt("time_per_event"));
+				//this setInterval is where the wait time for the activities sign up is saved
+				//why is that? I did not make this design so I dont know why
+				//info2.setInterval(result.getInt("time_per_event"));
+				int hour =Integer.parseInt(result.getString("time_reservation_made").substring(11, 13));
+				int min = Integer.parseInt(result.getString("time_reservation_made").substring(14, 16));
+				int estimatedTime = result.getInt("estimated_time");
+				min = estimatedTime + min;
+				if(min >= 60){
+					hour++;
+					min = min - 60;
+				}
+				//System.out.println("resercation time hour: "+hour+" min: "+min);
+				//System.out.println(System.currentTimeMillis());
+				DateFormat df = new SimpleDateFormat("HH:mm");
+				Date dateobj = new Date();
+				//System.out.println(df.format(dateobj));
+				int curhour = Integer.parseInt(df.format(dateobj).substring(0, 2));
+				int curmin = Integer.parseInt(df.format(dateobj).substring(3, 5));
+				//System.out.println("Current time hour: "+curhour+" min: "+curmin);
+				int rhour = hour-curhour;
+				int rmin = min-curmin;
+				int totalTime = (rhour*60)+rmin;
+				info2.setInterval(totalTime);
 				info2.setEndTime(endTime);
 				info2.setCapacity(result.getInt("max_guest_per_event"));
 				info2.setRideId(result.getLong("activity_id"));

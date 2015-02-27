@@ -181,7 +181,7 @@ public RideServiceImp(){}
 
 			long waitingTime = QueueUtil.getWaitingTime(count, capacity,
 					interval, true);
-
+//			long waitingTime = 5;
 			info.setWaitingTime(waitingTime);
 
 		}
