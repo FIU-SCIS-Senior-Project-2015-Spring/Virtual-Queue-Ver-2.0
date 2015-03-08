@@ -23,6 +23,7 @@ import com.virtual.queue.beans.User;
 import com.virtual.queue.request.LoginRequest;
 import com.virtual.queue.service.AdminService;
 import com.virtual.queue.service.LoginService;
+import com.virtual.queue.service.RideService;
 
 @Controller
 @RequestMapping("/admin")
@@ -34,6 +35,9 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	private RideService rideService;
 
 	@RequestMapping(value = "/signin", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<String> signIn(LoginRequest login,
@@ -52,7 +56,7 @@ public class AdminController {
 		if (user== null || user.isNill())
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 
-		if (!user.getUserRole().getRoleType().equals("ADMIN")) {
+		if (!user.getUserRole().getRoleType().equals("Admin")) {
 
 			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
 
@@ -78,6 +82,29 @@ public class AdminController {
 		obj.append("role", user.getUserRole().getRoleType());
 		// finish adding all roles returned from GET-USER SELECT
 		return new ResponseEntity<String>(obj.toString(), HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(value = "/addrecords", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> addrecords(int recnumber, int simridename,
+			HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("Add Records");
+		System.out.println("RecNumaber: "+ recnumber);
+		System.out.println("Ride num: "+ simridename);
+		if(recnumber>=100){
+			return new ResponseEntity<String>("Adding to much record",HttpStatus.BAD_REQUEST);
+		}
+		for(int x=3; x<simridename+3;x++){
+			try {
+				rideService.addUserRideById((long)simridename, (long)x);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
 
 	}
 
@@ -136,5 +163,31 @@ public class AdminController {
 		}
 		return list;
 	}
+	
+	@RequestMapping(value = "/allRides", method = RequestMethod.GET)
+	public @ResponseBody List<RideInfo> getAllRides() {
+		System.out.println("admin all rides");
+		List<RideInfo> list = new ArrayList<RideInfo>();
+		try {
+			list =  rideService.getAll();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	@RequestMapping(value = "/setMultipleRecords", method = RequestMethod.POST)
+	public @ResponseBody List<User> setMultipleRecords() {
+
+		List<User> list = new ArrayList<User>();
+		try {
+			list =  adminService.getAll();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	
 }

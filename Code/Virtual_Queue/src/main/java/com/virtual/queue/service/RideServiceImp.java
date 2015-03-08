@@ -57,10 +57,11 @@ public RideServiceImp(){}
 			int count = queueDao.getListRideInQueue(info.getRideId()).size();
 			int capacity = info.getCapacity();
 			int interval = info.getInterval();
-
+			info.setTotalRecord(count);
 			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
 					//interval, true);
 			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			
 			//long waitingTime = 5;
 			info.setWaitingTime(waitingTime);
 
@@ -99,23 +100,33 @@ public RideServiceImp(){}
 
 		validator.setRules(rules);
 
-		if (validator.validate(userid, rideId)) {
-
+		//if (validator.validate(userid, rideId)) {
+		if (true) {
 			// add user to ride/queue
-			result = rideDao.addUserRideById(rideId, userid);
-
+			RideInfo info = rideDao.getRideById(rideId);
+			int count = queueDao.getListRideInQueue(info.getRideId()).size();
+			int capacity = info.getCapacity();
+			int interval = info.getInterval();
+			info.setTotalRecord(count);
+			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
+					//interval, true);
+			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			
+				result = rideDao.addUserRideById(rideId, userid, waitingTime);
 			/*
 			 * check queue size and ride capacity. if there is no user on the
 			 * queue yet, or the amount of users is less than the ride
 			 * capacity,then notify this user just after add him/her to this
 			 * queue.
 			 */
-
+				
 			List<User> users = queueDao.getAllUserQueueForRide(rideId);
 			
 			User user = userDao.getUserById(userid);
 			
-			RideInfo info = rideDao.getRideById(rideId);
+			//RideInfo info = rideDao.getRideById(rideId);
+			
+			
 
 			if (users != null && info != null && user!=null) {
 				// Check for biz rules
