@@ -94,7 +94,7 @@ public class AdminController {
 		if(recnumber>=100){
 			return new ResponseEntity<String>("Adding to much record",HttpStatus.BAD_REQUEST);
 		}
-		for(int x=3; x<simridename+3;x++){
+		for(int x=3; x<recnumber+3;x++){
 			try {
 				rideService.addUserRideById((long)simridename, (long)x);
 			} catch (Exception e) {

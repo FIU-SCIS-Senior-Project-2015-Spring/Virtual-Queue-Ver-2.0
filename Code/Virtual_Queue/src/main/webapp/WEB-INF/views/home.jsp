@@ -52,6 +52,7 @@
 					<ul class="dropdown-menu" role="menu">
             			<li><a href="#admin" data-toggle="modal">Login</a></li>
             			<li><a href="#search" data-toggle="modal">Search</a></li>
+            			<li><a href="#simulate-rides" data-toggle="modal">Simulate Rides</a></li>
 					</ul>
 					
 					</li>
@@ -864,7 +865,7 @@
 				<ul class="nav navbar-nav navbar-right">
 
 					<li class="active"><a href="#"> Home </a></li>		
-					<li><a href="#simulate-rides" data-toggle="modal" id = "simulateRides"> Simulate Rides </a></li>			
+					<li><a href="#search" data-toggle="modal" id = "search"> Search </a></li>			
 					<li><a href="#logout-admin" data-toggle="modal" id="logout-admin"><span class="glyphicon glyphicon-off"></span> Logout </a></li>
 
 				</ul>
@@ -1000,12 +1001,14 @@ $(document).ready(function() {
 			//alert('valid credentials');  
 				
 		    $('#admin').modal('hide');
+		    $('#addSimulateRide').modal('hide'); 
 		    
 		    CleanLoginAdminForm();
 			
-			$('#search').modal('show'); 
+			$('#simulate-rides').modal('show'); 
 		
 			CleanLoginAdminForm();
+			
 			
 			if(response != 'undefined'){
 				
@@ -1724,7 +1727,7 @@ window.operateSimulateRideEvent = {
 			
 		$('#update-simridename').val(addingR) ;
 		
-		 $('#search').modal('hide');
+		 $('#simulate-rides').modal('hide');
     	 $('#addSimulateRide').modal('show');
     	//updateUser
          
