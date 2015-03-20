@@ -15,9 +15,11 @@ import com.virtual.queue.beans.User;
 @Transactional
 public class AdminDaoImp extends BaseDao implements AdminDao {
 	
-	private static final String GET_ALL_USERS = "SELECT u.user_id, u.first_name, u.last_name, u.enabled, u.user_name "
-			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.UserRole ur, VirtualQueueDB.Role r  "
-			+ " WHERE u.user_id = ur.user_id AND r.role_id = ur.role_id AND  r.role_type = 'USER' ";
+	//Changing SQL Query to the current database
+//	private static final String GET_ALL_USERS = "SELECT u.user_id, u.first_name, u.last_name, u.enabled, u.user_name "
+//			+ " FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.UserRole ur, VirtualQueueDB.Role r  "
+//			+ " WHERE u.user_id = ur.user_id AND r.role_id = ur.role_id AND  r.role_type = 'USER' ";
+	private static final String GET_ALL_USERS = " Select * From vqdatabase.patron p, vqdatabase.visitor v WHERE p.patron_id = v.patron_id AND p.role_type = 'User'";
 	
 	
 	@Override
@@ -34,16 +36,18 @@ public class AdminDaoImp extends BaseDao implements AdminDao {
 
 			
 			ResultSet result = statement.executeQuery();
-			
+			System.out.println("Admin simulate ride method");
 
 			while (result.next()) {
 
 				user = new User();
-				user.setUserid(result.getLong("user_id"));
-				user.setFirstName(result.getString("first_name"));
-				user.setLastName(result.getString("last_name"));
-				user.setEnabled(result.getString("enabled"));
-				user.setUserName(result.getString("user_name"));
+				user.setUserid(result.getLong("venue_id"));
+				user.setFirstName(result.getString("name_first"));
+				user.setLastName(result.getString("name_last"));
+				//This is not implmented in the current database design
+				//will keep it enabled right now
+				user.setEnabled("enabled");
+				user.setUserName(result.getString("username"));
 				infoList.add(user);
 			}
 

@@ -16,6 +16,7 @@ public class RideInfo {
 	private int timePerEvent;
 	private int entryTime;
 	private int exitTime;
+	private int totalRecord;
 	
 	public String getrName() {
 		return rName;
@@ -113,7 +114,13 @@ public class RideInfo {
 	public void setExitTime(int exitTime){
 		this.exitTime = exitTime;
 	}
+	public int getTotalRecord(){
+		return totalRecord;
+	}
 	
+	public void setTotalRecord(int totalRecord){
+		this.totalRecord = totalRecord;
+	}
 	
 
 }

@@ -39,7 +39,11 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 	private static final String GET_QUEUE = "SELECT * FROM vqdatabase.queue q ,vqdatabase.activity a where q.activity_id= a.activity_id   AND  a.activity_id =? ";
 
 	private static final String DELETE_ALL_FROM_QUEUE = "DELETE FROM VirtualQueueDB.UserQueue WHERE queue_id=(Select myqueue_id From Ride where ride_id= ? )";
-
+	
+	//this query is to delete the first record for a specific ride
+	
+	private static final String DELETE_FIRST_RECORD = "DELETE FROM vqdatabase.queue Where activity_id = ? LIMIT 1";
+	
 	private final static long VENUE_ID = 1;
 
 	//private static final String GET_RIDE_INFO_BY_USERID = "SELECT r.ride_name, r.ride_duraction , r.ride_capacity, r.ride_id,   r.longitude, r.latitude   FROM  VirtualQueueDB.UserQueue q, Ride r where q.user_id =? and r.myqueue_id=queue_id order by q.registered_time asc ";
@@ -51,7 +55,49 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 	public QueueDaoImp() {
 
 	}
+	
+	 // Calls dataBase to remove from front of the queue
+	public boolean removeFromFront(long rideId){
+		
+		PreparedStatement updateemp = null;
+		Connection conn = getConnection();
+		try {
 
+			updateemp = conn.prepareStatement(DELETE_FIRST_RECORD);
+
+			updateemp.setLong(1, rideId);
+			updateemp.executeUpdate();
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			// throw new ResetPasswordException(e.getMessage());
+			// TODO:needs to handle errors and return to caller with a message.
+			return false;
+
+		} finally {
+
+			if (updateemp != null)
+				try {
+					updateemp.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		
+		return true;
+	}
 	public List<UserQueueInfo> getNotificationInfoTest() {
 
 		// pull data from DB DAO
