@@ -75,6 +75,11 @@ public RideServiceImp(){}
 		// TODO Auto-generated method stub
 
 	}
+	@Override
+	public void removeFromFront(Long rideId) {
+		queueDao.removeFromFront(rideId);
+
+	}
 
 	@Override
 	public void updateRide(Ride ride) {

@@ -463,7 +463,11 @@
 					 
 						<div class="form-group">
 					
+<<<<<<< HEAD
 							<label for="numofRecords" class="col-lg-2 control-label">Add Random Records:</label>
+=======
+							<label for="numofRecords" class="col-lg-2 control-label">Add Records:</label>
+>>>>>>> #90Task
 							<div class="col-lg-10">
 								<input name= "recnumber" type="text" class="form-control" id="numofRecords"
 									placeholder="0">
@@ -1412,7 +1416,23 @@ function operateAdmin(value, row, index) {
             '<i class="glyphicon glyphicon-edit"></i>',
         '</a>',
         
-        '<a class="disable" href="javascript:void(0)" title="Disable">',
+        '<a class="disable" href="javascript:void(0)" title="adminDequeue">',
+        	'<i class="glyphicon glyphicon-ban-circle"></i>',
+    	'</a>',       
+         '<a class="enable" href="javascript:void(0)" title="Enable">',
+            '<i class="glyphicon glyphicon-ok-circle"></i>',
+        '</a>'
+    ].join('');
+        
+}; 
+function operateSimulateRide(value, row, index) {
+    return [
+            
+        '<a class="edit" href="javascript:void(0)" title="Add Records">',
+            '<i class="glyphicon glyphicon-edit"></i>',
+        '</a>',
+        
+        '<a class="disable" href="javascript:void(0)" title="Dequeue Records">',
         	'<i class="glyphicon glyphicon-ban-circle"></i>',
     	'</a>',       
          '<a class="enable" href="javascript:void(0)" title="Enable">',
@@ -1576,6 +1596,8 @@ window.operateAddingEvent = {
         
        }
     };   
+    
+
 window.operateAdminEditEvent = {
         
     	'click .edit': function (e, value, row, index) {
@@ -1669,6 +1691,112 @@ window.operateAdminEditEvent = {
 			}
 		       		
 				})                    
+		},
+		
+		'click .enable': function (e, value, row, index) {
+			
+			// alert('You click remove icon, row: ' + JSON.stringify(row));
+			bootbox.confirm("Are you sure you want to enable this account?", function(result) {
+				if(result == true){
+					
+					var disU=JSON.stringify(row);         	
+					//alert('First from stringify row' + disU);
+					
+					var parsingU=$.parseJSON(disU); 
+					//alert('second from parsing row' + parsingU);
+					
+					var disEnU=String(parsingU.userid);
+					//alert('third, getting value from key' + disEnU);
+					
+					jQuery.ajax(
+					{
+					url : '${pageContext.request.contextPath}/user/enable/' + disEnU+ "/true" ,
+					type: 'GET',
+					success:function(data) {
+					if(data == true) {
+						alert('The account was succesfully enabled');
+						
+					}
+					else{
+						alert ('The account could not be enabled');
+					}
+					
+					}  ,
+					error: function() { alert('Sorry, the account could not be enabled')}
+					}
+					);
+				}
+			       		
+					})                    
+			}
+  
+};
+
+//events used for SimulateRideEvent
+window.operateSimulateRideEvent = {
+        //fack
+    	'click .edit': function (e, value, row, index) {
+    		
+    	var addR=JSON.stringify(row);         	
+    	//alert('First from stringify row' + addR);
+    	
+    	var parsingR=$.parseJSON(addR); 
+    	//alert('second from parsing row' + parsingR);
+    	
+		var addingR=String(parsingR.rideId);
+		//alert('third, getting value from key' + addingR);
+		
+		var editU10 = String(row);
+			
+		$('#update-simridename').val(addingR) ;
+		
+		 $('#simulate-rides').modal('hide');
+    	 $('#addSimulateRide').modal('show');
+    	//updateUser
+         
+    
+   },
+    
+ 	// button event activated when admin clicks Dequeue
+   'click .disable': function (e, value, row, index) { 
+   		
+	    	var addR=JSON.stringify(row);         	
+	    	//alert('First from stringify row' + addR);
+	    	
+	    	var parsingR=$.parseJSON(addR); 
+	    	//alert('second from parsing row' + parsingR);
+	    	
+			var addingR=String(parsingR.rideId);
+			//alert('third, getting value from key' + addingR);
+			
+			var capR=String(parsingR.capacity); //stores the max capacity per ride
+			
+			var totalR=String(parsingR.totalRecord);
+			
+			var intervalR=String(parsingR.interval);
+			
+			var editU10 = String(row);
+			
+			//Added the .Post for passing the ride_id to adminDequeue
+			$.post('${pageContext.request.contextPath}/admin/adminDequeue',  
+					{ "ride_id" : addingR, "maxCpty" : capR, "totalRecord" : totalR , "interval" : intervalR}).done(
+					function(response,textStatus,jqXHR) { 
+						if(response == false){
+							
+							alert('Sorry, you are unable to dequeue these patrons from the ride!');	
+							return;
+							
+						}
+						alert('You have successfuly dequeue from ride'); 
+					
+						  
+					    
+					}).fail(function(jqXHR, textStatus, errorThrown) 
+						    {
+					  alert('unable to dequeue from ride !!!!');	
+			  });		
+		
+				                   
 		},
 		'click .enable': function (e, value, row, index) {
 			

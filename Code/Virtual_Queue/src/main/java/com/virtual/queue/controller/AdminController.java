@@ -97,6 +97,39 @@ public class AdminController {
 		for(int x=3; x<recnumber+3;x++){
 			try {
 				rideService.addUserRideById((long)simridename, (long)x);
+<<<<<<< HEAD
+=======
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
+
+	}
+	
+	@RequestMapping(value = "/adminDequeue", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> adminDequeue(
+			@RequestParam(value = "ride_id") Long rideId, 
+			@RequestParam(value = "maxCpty") Long maxCpty,
+			@RequestParam(value = "totalRecord") Long totalRecord,
+			@RequestParam(value = "interval") Long interval) {
+		System.out.println("ride_id" + rideId);
+		System.out.println(maxCpty);
+//		System.out.println("RecNumaber: "+ recnumber);
+//		System.out.println("Ride num: "+ simridename);
+		long totalCap = maxCpty * interval;
+		if(totalRecord <= totalCap){
+			return new ResponseEntity<String>("Not enough patrons to fill ride capacity, check again soon!",HttpStatus.BAD_REQUEST);
+		}
+		
+		for(Long x=totalCap; x> 0;x--){
+			try {
+				  rideService.removeFromFront(rideId);
+>>>>>>> #90Task
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
