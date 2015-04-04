@@ -84,4 +84,23 @@ public class QueueUtil {
 
 	}
 	
+	public static long getDynWaitingTime(int frontNum, int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
+			boolean topbot) {
+		double wait = 0;
+		long result = 0;
+		if (maxGuestPerEvent == 0)
+			return -1;
+		if (topbot) {
+			wait = frontNum*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+			result = (int) Math.ceil(wait);
+		} else {
+			wait = frontNum*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+			result = (int) Math.ceil(wait);
+		}
+
+		return result;
+
+	}
+	
+	
 }

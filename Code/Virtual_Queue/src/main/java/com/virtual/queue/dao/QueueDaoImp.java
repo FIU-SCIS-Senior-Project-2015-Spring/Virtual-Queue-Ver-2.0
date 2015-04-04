@@ -50,8 +50,12 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 	private static final String GET_RIDE_INFO_BY_USERID = "SELECT * FROM  vqdatabase.queue q, activity a where q.visitor_id =? and a.activity_id=q.activity_id order by q.time_reservation_made asc ";
 
 	private static final String GET_QUEUE_INFO_INTERVAL = "SELECT u.user_id  FROM VirtualQueueDB.VenueRegisteredUser u, VirtualQueueDB.Ride r,  VirtualQueueDB.UserQueue uq WHERE r.ride_id = ? AND r.myqueue_id = uq.queue_id AND uq.user_id = u.user_id order by uq.registered_time";
-	private static final String DELETE_USER_FROM_QUEUE = "DELETE FROM VirtualQueueDB.UserQueue WHERE queue_id=(Select myqueue_id From Ride where ride_id= ?) AND user_id = ? ";
-
+	private static final String DELETE_USER_FROM_QUEUE = "Delete FROM vqdatabase.queue Where activity_id = ? AND visitor_id = ?";
+	//query to find total number of visitors waiting front of this user
+	private static final String GET_TOTAL_NUM_FRONT_OF_USER = "Select Count(*) AS totalnum From vqdatabase.queue Where queue_id < ? and activity_id = ?";
+	//query to find specific queue Id for specific visitor in a specific ride
+	private static final String GET_QUEUE_ID_FOR_VISITOR = "Select * From vqdatabase.queue Where visitor_id = ? AND activity_id = ?";
+	
 	public QueueDaoImp() {
 
 	}
@@ -418,6 +422,7 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 				info.setCapacity(result.getInt("max_guest_per_event"));
 				info.setQueueId(result.getInt("activity_id"));
 				info.setWaitingTime(result.getInt("estimated_time"));
+				info.setQueueRealId(result.getInt("queue_id"));
 			}
 
 			result.close();
@@ -576,6 +581,7 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 						.getBigDecimal("latitude"), result
 						.getBigDecimal("longitude")));
 				infoLst.add(info2);
+				
 			}
 
 			result.close();
@@ -619,4 +625,100 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 		// TODO Auto-generated method stub
 		return new ArrayList<Long>(1);
 	}
+	
+	@Override
+	public long getUserQueueId(long userId, long rideId) {
+		Connection conn = getConnection();
+		long queueId = 0;
+		try {
+
+			PreparedStatement statement = conn
+					.prepareStatement(GET_QUEUE_ID_FOR_VISITOR);
+
+			statement.setLong(1, userId);
+			statement.setLong(2, rideId);
+			
+			ResultSet result = statement.executeQuery();
+			result.next();
+			queueId = result.getLong("queue_id");
+			
+			
+			result.close();
+			statement.close();
+		} catch (SQLException e) {
+			// TODO need to add log4j output
+			e.printStackTrace();
+
+		} catch (Exception ex) {
+
+			// TODO need to add log4j output
+			ex.printStackTrace();
+
+		} finally {
+
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		
+		
+		
+		return queueId;
+	}
+	
+	@Override
+	public int getNumFrontUser(long rideId, long queueId) {
+		
+		
+		
+		Connection conn = getConnection();
+		int totalnum = 0;
+		try {
+
+			PreparedStatement statement = conn
+					.prepareStatement(GET_TOTAL_NUM_FRONT_OF_USER);
+
+			statement.setLong(1, queueId);
+			statement.setLong(2, rideId);
+			
+			ResultSet result = statement.executeQuery();
+			result.next();
+			totalnum = result.getInt("totalnum");
+
+			result.close();
+			statement.close();
+		} catch (SQLException e) {
+			// TODO need to add log4j output
+			e.printStackTrace();
+
+		} catch (Exception ex) {
+
+			// TODO need to add log4j output
+			ex.printStackTrace();
+
+		} finally {
+
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		
+		
+		
+		return totalnum;
+	}
+	
+	
 }

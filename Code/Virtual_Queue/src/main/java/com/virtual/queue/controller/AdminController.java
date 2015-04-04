@@ -97,8 +97,7 @@ public class AdminController {
 		for(int x=3; x<recnumber+3;x++){
 			try {
 				rideService.addUserRideById((long)simridename, (long)x);
-<<<<<<< HEAD
-=======
+
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -129,7 +128,7 @@ public class AdminController {
 		for(Long x=totalCap; x> 0;x--){
 			try {
 				  rideService.removeFromFront(rideId);
->>>>>>> #90Task
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

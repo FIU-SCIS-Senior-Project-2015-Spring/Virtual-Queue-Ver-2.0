@@ -40,11 +40,6 @@ public class DBUtil {
 			try {
 
 				Class.forName(DRIVER);
-<<<<<<< HEAD
-				System.out.println("WTF!!!!#!@$!@#$!#@$!#@");
-=======
-				System.out.println("did this change apply?");
->>>>>>> #90Task
 				connection = (MySQLConnection) DriverManager.getConnection(URL,
 						USER, PASSWORD);
 

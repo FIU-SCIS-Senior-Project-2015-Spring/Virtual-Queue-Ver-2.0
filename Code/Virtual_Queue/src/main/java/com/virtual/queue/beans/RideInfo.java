@@ -17,6 +17,7 @@ public class RideInfo {
 	private int entryTime;
 	private int exitTime;
 	private int totalRecord;
+	private int inFront;
 	
 	public String getrName() {
 		return rName;
@@ -122,6 +123,13 @@ public class RideInfo {
 		this.totalRecord = totalRecord;
 	}
 	
+	public int getInFront(){
+		return inFront;
+	}
+	
+	public void setInFront(int inFront){
+		this.inFront = inFront;
+	}
 
 }
 

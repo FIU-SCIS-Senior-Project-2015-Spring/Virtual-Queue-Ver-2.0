@@ -72,6 +72,7 @@ public RideController(RideService service){
 		List<RideInfo> list = new ArrayList<RideInfo>();
 		try {
 			list = rideService.getRidesByUser(userId);
+			System.out.println("hi");
 		} catch (NotificationException e) {			
 			e.printStackTrace();
 		} catch (Exception e) {		

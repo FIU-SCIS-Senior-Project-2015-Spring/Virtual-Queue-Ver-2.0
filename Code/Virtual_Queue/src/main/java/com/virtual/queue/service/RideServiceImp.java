@@ -190,15 +190,22 @@ public RideServiceImp(){}
 		for (RideInfo info : list) {
 			// get all data to calculate waiting time.
 			bean = ruleService.loadDataRule(userId, info.getRideId());
-
-			int count = bean.getUserList().size();
-			int capacity = bean.getRide().getCapacity();
-			int interval = bean.getRide().getInterval();
-
-			long waitingTime = QueueUtil.getWaitingTime(count, capacity,
-					interval, true);
-//			long waitingTime = 5;
-			info.setWaitingTime(waitingTime);
+			 
+			long queueId =  queueDao.getUserQueueId(userId, info.getRideId());
+			//Long queueId = bean.getQueueInfo().getQueueRealId();
+			int numFront = queueDao.getNumFrontUser(info.getRideId(), queueId);
+		
+			int capacity = info.getCapacity();
+			int interval = info.getInterval();
+			
+			long waitingTime = QueueUtil.getDynWaitingTime(numFront, capacity,
+					bean.getRide().getInterval(), bean.getRide().getTimePerEvent(), bean.getRide().getEntryTime(), bean.getRide().getExitTime() , true);
+			// waitingTime = 5;
+			//info.setWaitingTime(waitingTime);
+			info.setInterval((int)waitingTime);
+			info.setInFront(numFront);
+			//bean.getRide().setInterval((int)waitingTime);
+			
 
 		}
 

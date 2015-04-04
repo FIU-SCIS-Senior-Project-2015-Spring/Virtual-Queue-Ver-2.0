@@ -10,6 +10,14 @@ public class QueueInfo {
 	private Date registeredDt;
 	
 	
+	public long getQueueRealId() {
+		return queueId;
+	}
+
+	public void setQueueRealId(long queueId) {
+		this.queueId = queueId;
+	}
+	
 	public long getQueueId() {
 		return queueId;
 	}
