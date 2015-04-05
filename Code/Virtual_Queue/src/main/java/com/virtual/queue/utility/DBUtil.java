@@ -40,7 +40,6 @@ public class DBUtil {
 			try {
 
 				Class.forName(DRIVER);
-
 				connection = (MySQLConnection) DriverManager.getConnection(URL,
 						USER, PASSWORD);
 

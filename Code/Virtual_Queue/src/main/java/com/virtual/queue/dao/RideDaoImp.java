@@ -36,8 +36,9 @@ public class RideDaoImp extends BaseDao implements RideDao {
 	//private static final String GET_RIDE_INFO_BY_USERID = "SELECT r.ride_name, r.ride_duraction ,r.ride_id, r.ride_capacity ,r.latitude, r.longitude FROM  VirtualQueueDB.UserQueue q, Ride r where q.user_id =? and r.myqueue_id=queue_id order by q.registered_time asc ";
 	private static final String GET_RIDE_INFO_BY_USERID = "SELECT * FROM  vqdatabase.queue q, vqdatabase.activity a where q.visitor_id =? and a.activity_id=q.activity_id order by q.time_reservation_made asc ";
 
-	private static final String ADD_USER_TO_RIDE = "INSERT INTO VirtualQueueDB.USerQueue (queue_id,user_id,registered_time)VALUES ((Select myqueue_id From Ride where ride_id=? ),?,NOW());";
-
+	//private static final String ADD_USER_TO_RIDE = "INSERT INTO VirtualQueueDB.USerQueue (queue_id,user_id,registered_time)VALUES ((Select myqueue_id From Ride where ride_id=? ),?,NOW());";
+	private static final String ADD_USER_TO_RIDE = "INSERT INTO vqdatabase.queue (activity_id,visitor_id,reservation_time,estimated_time)VALUES (?,?,NOW(),?);";
+	
 	private static final String GET_RIDE_ALL = "SELECT r.ride_name, r.ride_duraction ,r.ride_id, r.ride_capacity ,r.latitude, r.longitude FROM  Ride r  ";
 
 //	private static final String GET_RIDE_INFO_BY_ID = "SELECT r.ride_name, r.ride_duraction, n.notification_time,n.notification_wait , r.ride_capacity ,r.ride_id , r.latitude, r.longitude "
@@ -46,6 +47,8 @@ public class RideDaoImp extends BaseDao implements RideDao {
 	private static final String GET_RIDE_INFO_BY_ID = "SELECT * FROM vqdatabase.activity a WHERE a.activity_id= ?";
 
 	private static final String GET_ALL_ACTIVITY = "SELECT * FROM activity";
+	//This query is used to modify specific ride records
+	private static final String MODIFY_RIDE_RECORD = "UPDATE vqdatabase.activity SET name_act = ?, time_per_event= ?, entry_time= ?, exit_time = ?, max_guest_per_event = ?, max_concurrent_event = ?   WHERE activity_id = ?";
 	
 	@Override
 	public List<RideInfo> pullRideInfo() throws NotificationException {
@@ -236,8 +239,11 @@ public class RideDaoImp extends BaseDao implements RideDao {
 			if (result.next()) {
 				info2 = new RideInfo();
 				info2.setrName(result.getString("name_act"));
+				info2.setTimePerEvent(result.getInt("time_per_event"));
+				info2.setEntryTime(result.getInt("entry_time"));
+				info2.setExitTime(result.getInt("exit_time"));
 				info2.setStartTime(startTime);
-				info2.setInterval(result.getInt("time_per_event"));
+				info2.setInterval(result.getInt("max_concurrent_event"));
 				info2.setEndTime(endTime);
 				info2.setCapacity(result.getInt("max_guest_per_event"));
 				info2.setRideId(result.getLong("activity_id"));
@@ -277,7 +283,7 @@ public class RideDaoImp extends BaseDao implements RideDao {
 	}
 
 	@Override
-	public boolean addUserRideById(Long rideId, Long userId) {
+	public boolean addUserRideById(Long rideId, Long userId, Long waitTime) {
 		PreparedStatement updateemp = null;
 		Connection con = getConnection();
 		try {
@@ -285,6 +291,7 @@ public class RideDaoImp extends BaseDao implements RideDao {
 			updateemp = con.prepareStatement(ADD_USER_TO_RIDE);
 			updateemp.setLong(1, rideId);
 			updateemp.setLong(2, userId);
+			updateemp.setLong(3, waitTime);
 			updateemp.executeUpdate();
 
 		} catch (SQLException e) {
@@ -400,6 +407,58 @@ public class RideDaoImp extends BaseDao implements RideDao {
 
 		return infoLst;
 
+	}
+	
+	public boolean editRide(Long activityNum, String rideName, Long timePerEvent, Long entryTime, Long exitTime, Long maxCpty,  Long concRide){
+		System.out.println("activityNum: " + activityNum);
+		System.out.println("rideName: " + rideName);
+		System.out.println("timePerEvent: " + timePerEvent);
+		System.out.println("entryTime: " + entryTime);
+		System.out.println("exitTime: " + exitTime);
+		System.out.println("maxCpty: " + maxCpty);
+		System.out.println("concRide: " + concRide);
+		PreparedStatement updateemp = null;
+		Connection con = getConnection();
+		try {
+			//"UPDATE vqdatabase.activity SET name_act = ?, time_per_event= ?, entry_time= ?, exit_time = ?, max_guest_per_event = ?, max_concurrent_event = ?   WHERE activity_id = ?";
+			updateemp = con.prepareStatement(MODIFY_RIDE_RECORD);
+			updateemp.setString(1, rideName);
+			updateemp.setLong(2, timePerEvent);
+			updateemp.setLong(3, entryTime);
+			updateemp.setLong(4, exitTime);
+			updateemp.setLong(5, maxCpty);
+			updateemp.setLong(6, concRide);
+			updateemp.setLong(7, activityNum);
+			updateemp.executeUpdate();
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			return false;
+		} finally {
+
+			if (updateemp != null) {
+				try {
+					updateemp.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				}
+			}
+
+			if (con != null) {
+
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		return true;
 	}
 
 }

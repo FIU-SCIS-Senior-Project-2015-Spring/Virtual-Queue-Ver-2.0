@@ -57,10 +57,11 @@ public RideServiceImp(){}
 			int count = queueDao.getListRideInQueue(info.getRideId()).size();
 			int capacity = info.getCapacity();
 			int interval = info.getInterval();
-
+			info.setTotalRecord(count);
 			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
 					//interval, true);
 			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			
 			//long waitingTime = 5;
 			info.setWaitingTime(waitingTime);
 
@@ -72,6 +73,11 @@ public RideServiceImp(){}
 	@Override
 	public void addRide(Ride ride) {
 		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void removeFromFront(Long rideId) {
+		queueDao.removeFromFront(rideId);
 
 	}
 
@@ -99,23 +105,33 @@ public RideServiceImp(){}
 
 		validator.setRules(rules);
 
-		if (validator.validate(userid, rideId)) {
-
+		//if (validator.validate(userid, rideId)) {
+		if (true) {
 			// add user to ride/queue
-			result = rideDao.addUserRideById(rideId, userid);
-
+			RideInfo info = rideDao.getRideById(rideId);
+			int count = queueDao.getListRideInQueue(info.getRideId()).size();
+			int capacity = info.getCapacity();
+			int interval = info.getInterval();
+			info.setTotalRecord(count);
+			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
+					//interval, true);
+			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			
+				result = rideDao.addUserRideById(rideId, userid, waitingTime);
 			/*
 			 * check queue size and ride capacity. if there is no user on the
 			 * queue yet, or the amount of users is less than the ride
 			 * capacity,then notify this user just after add him/her to this
 			 * queue.
 			 */
-
+				
 			List<User> users = queueDao.getAllUserQueueForRide(rideId);
 			
 			User user = userDao.getUserById(userid);
 			
-			RideInfo info = rideDao.getRideById(rideId);
+			//RideInfo info = rideDao.getRideById(rideId);
+			
+			
 
 			if (users != null && info != null && user!=null) {
 				// Check for biz rules
@@ -174,20 +190,31 @@ public RideServiceImp(){}
 		for (RideInfo info : list) {
 			// get all data to calculate waiting time.
 			bean = ruleService.loadDataRule(userId, info.getRideId());
-
-			int count = bean.getUserList().size();
-			int capacity = bean.getRide().getCapacity();
-			int interval = bean.getRide().getInterval();
-
-			long waitingTime = QueueUtil.getWaitingTime(count, capacity,
-					interval, true);
-//			long waitingTime = 5;
-			info.setWaitingTime(waitingTime);
+			 
+			long queueId =  queueDao.getUserQueueId(userId, info.getRideId());
+			//Long queueId = bean.getQueueInfo().getQueueRealId();
+			int numFront = queueDao.getNumFrontUser(info.getRideId(), queueId);
+		
+			int capacity = info.getCapacity();
+			int interval = info.getInterval();
+			
+			long waitingTime = QueueUtil.getDynWaitingTime(numFront, capacity,
+					bean.getRide().getInterval(), bean.getRide().getTimePerEvent(), bean.getRide().getEntryTime(), bean.getRide().getExitTime() , true);
+			// waitingTime = 5;
+			//info.setWaitingTime(waitingTime);
+			info.setInterval((int)waitingTime);
+			info.setInFront(numFront);
+			//bean.getRide().setInterval((int)waitingTime);
+			
 
 		}
 
 		return list;
 
+	}
+	
+	public void editRide(Long activityNum, String rideName, Long timePerEvent, Long entryTime, Long exitTime, Long maxCpty,  Long concRide){
+		rideDao.editRide(activityNum, rideName, timePerEvent, entryTime, exitTime, maxCpty, concRide);
 	}
 
 }

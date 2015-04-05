@@ -30,4 +30,9 @@ public interface QueueDao {
 
 	LinkedList<Queue> getListRideInQueue(long rideId);
 	
+	public boolean removeFromFront(long rideId); // Calls dataBase to remove from front of the queue
+	
+	public int getNumFrontUser(long rideId, long queueId); // calls database to get total number of visitors waiting infront of the specific visitor in a ride
+	
+	public long getUserQueueId(long userId, long rideId); // calls database to get queueId for specific user and ride
 }

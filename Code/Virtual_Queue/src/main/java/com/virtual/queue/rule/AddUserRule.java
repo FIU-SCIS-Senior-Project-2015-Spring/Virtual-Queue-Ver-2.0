@@ -121,9 +121,9 @@ public class AddUserRule implements Rule {
 							// caller knows the problem.
 
 		// queue already full return false;
-		if (userList.size() == queueInfo.getCapacity()) {
-			return false;
-		}
+		//if (userList.size() == queueInfo.getCapacity()) {
+		//	return false;
+		//}
 		// user already has been registered for other rides.
 		if (rideList != null && !rideList.isEmpty()) {
 

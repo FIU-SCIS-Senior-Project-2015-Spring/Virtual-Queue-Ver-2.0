@@ -17,7 +17,7 @@ public class RuleServiceImp implements RuleService {
 	@Override
 	public RuleCapacityBean loadDataRule(long userId, long rideId)
 			throws Exception {
-
+		//Changing rules, by getting specific queue using userId and RideId
 		return new RuleCapacityBean(rDao.getRideById(rideId),
 				qDao.getQueueInfoByRideId(rideId),
 				qDao.getRideListByUser(userId),
