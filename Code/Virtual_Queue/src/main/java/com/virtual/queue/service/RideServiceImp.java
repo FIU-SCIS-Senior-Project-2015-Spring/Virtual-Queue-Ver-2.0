@@ -212,5 +212,9 @@ public RideServiceImp(){}
 		return list;
 
 	}
+	
+	public void editRide(Long activityNum, String rideName, Long timePerEvent, Long entryTime, Long exitTime, Long maxCpty,  Long concRide){
+		rideDao.editRide(activityNum, rideName, timePerEvent, entryTime, exitTime, maxCpty, concRide);
+	}
 
 }

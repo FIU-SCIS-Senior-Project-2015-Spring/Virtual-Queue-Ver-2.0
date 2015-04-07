@@ -21,6 +21,7 @@ public interface RideService {
 	public RideInfo getRidebyId(long rideId) throws NotificationException;
 	public List<RideInfo> getRidesByUser(long userId) throws NotificationException, Exception;
 	public void removeFromFront(Long rideId); //Added to remove from front of the Queue for a single ride
+	public void editRide(Long activityNum, String rideName, Long timePerEvent, Long entryTime, Long exitTime, Long maxCpty,  Long concRide);
 	
 
 }

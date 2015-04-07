@@ -498,6 +498,96 @@
 </div>
 	</div>
 
+<div class="modal fade" id="adminEdit" role="dialog" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form class="form-horizontal" id = "editRide" >
+					<div class="modal-header">
+						<h4>Edit Ride Information</h4>
+					</div>
+
+					<div class="modal-body">
+					 
+						<div class="form-group">
+					
+							<label for="numofRecords" class="col-lg-2 control-label">Ride ID:</label>
+							<div class="col-lg-10">
+								<input name= "activityNum" type="text" class="form-control" id="update-activityNum"
+									placeholder="0">
+							</div>
+							
+                            <label for="numofRecords" class="col-lg-2 control-label">Ride Name:</label> 
+                            <div class="col-lg-10">
+							<input name= "rideName" type="text" class="form-control" id="update-rideName"
+									placeholder="0">
+							</div>
+                            <label for="numofRecords" class="col-lg-2 control-label">Interval Time:</label> 
+                            <div class="col-lg-10">
+							<input name= "concRec" type="text" class="form-control" id="update-concRec"
+									placeholder="0">
+							</div>
+                            <label for="numofRecords" class="col-lg-2 control-label">Entry Time:</label> 
+                            <div class="col-lg-10">
+							<input name= "entryTime" type="text" class="form-control" id="update-entryTime"
+									placeholder="0">
+							</div>
+                            <label for="numofRecords" class="col-lg-2 control-label">Exit Time:</label> 
+                            <div class="col-lg-10">
+							<input name= "exitTime" type="text" class="form-control" id="update-exitTime"
+									placeholder="0">
+							</div> 
+                            <label for="numofRecords" class="col-lg-2 control-label">Max Capacity:</label> 
+                            <div class="col-lg-10">
+							<input name= "maxCpty" type="text" class="form-control" id="update-maxCpty"
+									placeholder="0">
+							</div> 
+                            <label for="numofRecords" class="col-lg-2 control-label">Concurrency Ride:</label> 
+                            <div class="col-lg-10">
+							<input name= "interval" type="text" class="form-control" id="update-interval"
+									placeholder="0">
+							</div> 
+                           
+						</div>
+					</div>
+
+							<div class="modal-footer">
+
+								<div class="col-md-2">
+									<button type="submit" value="Send"
+										class="btn btn-info pull-left" id="submit">Submit</button>
+								</div>
+
+
+								<div class="col-md-2">
+									<button type="button" class="btn btn-info pull-left "
+										data-dismiss="modal" id="update_cancel" >Cancel</button>
+								</div>
+<!--  
+								<div id="personFormResponse" class="green"></div>
+-->
+							</div>
+						
+						</form>
+		
+		</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	<div class="modal fade" id="reset" role="dialog" data-backdrop="static" data-keyboard="false">
 
@@ -1024,6 +1114,30 @@ $(document).ready(function() {
   }); 
 		e.preventDefault(); // prevent actual form submit and page reload 
 	});	
+	//submit to edit ride information to a specific ride
+	$('#editRide').submit(function(e) {
+		// will pass the form date using the jQuery serialize function
+		$.post('${pageContext.request.contextPath}/admin/adminEdit',  
+				$(this).serialize()).done(
+				function(response,textStatus,jqXHR) { 
+					if(response == false){
+						
+						alert('Sorry, you are unable to dequeue these patrons from the ride!');	
+						return;
+						
+					}
+					alert('You have successfuly dequeue from ride'); 
+				
+					  
+				    
+				}).fail(function(jqXHR, textStatus, errorThrown) 
+					    {
+				  alert('Infromation!!!');	
+		  });	
+  }); 
+		e.preventDefault(); // prevent actual form submit and page reload 
+	});	
+	
 	
 	
 	  /*
@@ -1104,8 +1218,8 @@ $(document).ready(function() {
 				}
 				CleanRegisterForm();
 			});  
-			}); 
 }); 
+ 
  	
 		//=========DocumentReady ends=============
 $('#forgotPasswordForward').on('click', function () {
@@ -1383,6 +1497,63 @@ $('#registerForm').bootstrapValidator({
 					},
 					}
 					},											
+												
+		}
+		});
+	$('#editRide').bootstrapValidator({
+		message: 'This value is not valid',
+		fields: {
+			
+			activityNum: {
+				validators: {
+				notEmpty: {
+				message: 'You must enter a number'
+				},
+				}
+				},
+				rideName: {
+					validators: {
+					notEmpty: {
+					message: 'You must enter a name'
+					},
+					}
+					},
+						concRec: {
+							validators: {
+							notEmpty: {
+							message: 'You must enter a number'
+							},
+							}
+							},	
+							
+							entryTime: {
+								validators: {
+								notEmpty: {
+								message: 'You must enter a number'
+								},
+								}
+								},	
+								exitTime: {
+									validators: {
+									notEmpty: {
+									message: 'You must enter a number'
+									},
+									}
+									},	
+									maxCpty: {
+										validators: {
+										notEmpty: {
+										message: 'You must enter a number'
+										},
+										}
+										},	
+										interval: {
+											validators: {
+											notEmpty: {
+											message: 'You must enter a number'
+											},
+											}
+											},	
 												
 		}
 		});
@@ -1736,7 +1907,8 @@ window.operateSimulateRideEvent = {
          
     
    },
-   
+   //fack
+   //events for Admin Dequeue
    'click .disable': function (e, value, row, index) {
   		
    	var addR=JSON.stringify(row);         	
@@ -1777,41 +1949,48 @@ window.operateSimulateRideEvent = {
 	
 			
 		},
+		//events for admin Edit
 		'click .enable': function (e, value, row, index) {
 			
-			// alert('You click remove icon, row: ' + JSON.stringify(row));
-			bootbox.confirm("Are you sure you want to enable this account?", function(result) {
-				if(result == true){
-					
-					var disU=JSON.stringify(row);         	
-					//alert('First from stringify row' + disU);
-					
-					var parsingU=$.parseJSON(disU); 
-					//alert('second from parsing row' + parsingU);
-					
-					var disEnU=String(parsingU.userid);
-					//alert('third, getting value from key' + disEnU);
-					
-					jQuery.ajax(
-					{
-					url : '${pageContext.request.contextPath}/user/enable/' + disEnU+ "/true" ,
-					type: 'GET',
-					success:function(data) {
-					if(data == true) {
-						alert('The account was succesfully enabled');
-						
-					}
-					else{
-						alert ('The account could not be enabled');
-					}
-					
-					}  ,
-					error: function() { alert('Sorry, the account could not be enabled')}
-					}
-					);
-				}
-			       		
-					})                    
+	 		
+		   	var addR2=JSON.stringify(row);         	
+		   	//alert('First from stringify row' + addR);
+		   	
+		   	var parsingR2=$.parseJSON(addR2); 
+		   	//alert('second from parsing row' + parsingR);
+		   	
+				var addingR2=String(parsingR2.rideId);
+				//alert('third, getting value from key' + addingR);
+				
+				var nameT=String(parsingR2.rName);
+				
+				var waitT=String(parsingR2.waitingTime);
+				
+				var totalR=String(parsingR2.totalRecord);
+				
+				var timePE=String(parsingR2.timePerEvent);
+				
+				var st=String(parsingR2.startTime);
+				
+				var et=String(parsingR2.endTime);
+				
+				var capR=String(parsingR2.capacity); //stores the max capacity per ride
+				
+				var intervalR=String(parsingR2.interval);
+
+				var editU10= String(row);
+				
+				$('#update-activityNum').val(addingR2) ;
+				$('#update-rideName').val(nameT) ;
+				
+				$('#simulate-rides').modal('hide');
+		    	$('#adminEdit').modal('show');
+				
+		    	
+				//Added the .Post for passing the ride_id to adminDequeue
+
+				
+			                  
 			}
   
 };

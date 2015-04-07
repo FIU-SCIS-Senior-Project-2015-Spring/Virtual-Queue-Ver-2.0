@@ -47,6 +47,8 @@ public class RideDaoImp extends BaseDao implements RideDao {
 	private static final String GET_RIDE_INFO_BY_ID = "SELECT * FROM vqdatabase.activity a WHERE a.activity_id= ?";
 
 	private static final String GET_ALL_ACTIVITY = "SELECT * FROM activity";
+	//This query is used to modify specific ride records
+	private static final String MODIFY_RIDE_RECORD = "UPDATE vqdatabase.activity SET name_act = ?, time_per_event= ?, entry_time= ?, exit_time = ?, max_guest_per_event = ?, max_concurrent_event = ?   WHERE activity_id = ?";
 	
 	@Override
 	public List<RideInfo> pullRideInfo() throws NotificationException {
@@ -405,6 +407,58 @@ public class RideDaoImp extends BaseDao implements RideDao {
 
 		return infoLst;
 
+	}
+	
+	public boolean editRide(Long activityNum, String rideName, Long timePerEvent, Long entryTime, Long exitTime, Long maxCpty,  Long concRide){
+		System.out.println("activityNum: " + activityNum);
+		System.out.println("rideName: " + rideName);
+		System.out.println("timePerEvent: " + timePerEvent);
+		System.out.println("entryTime: " + entryTime);
+		System.out.println("exitTime: " + exitTime);
+		System.out.println("maxCpty: " + maxCpty);
+		System.out.println("concRide: " + concRide);
+		PreparedStatement updateemp = null;
+		Connection con = getConnection();
+		try {
+			//"UPDATE vqdatabase.activity SET name_act = ?, time_per_event= ?, entry_time= ?, exit_time = ?, max_guest_per_event = ?, max_concurrent_event = ?   WHERE activity_id = ?";
+			updateemp = con.prepareStatement(MODIFY_RIDE_RECORD);
+			updateemp.setString(1, rideName);
+			updateemp.setLong(2, timePerEvent);
+			updateemp.setLong(3, entryTime);
+			updateemp.setLong(4, exitTime);
+			updateemp.setLong(5, maxCpty);
+			updateemp.setLong(6, concRide);
+			updateemp.setLong(7, activityNum);
+			updateemp.executeUpdate();
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			return false;
+		} finally {
+
+			if (updateemp != null) {
+				try {
+					updateemp.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+
+				}
+			}
+
+			if (con != null) {
+
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		return true;
 	}
 
 }

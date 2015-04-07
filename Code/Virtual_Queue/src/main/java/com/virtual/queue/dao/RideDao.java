@@ -11,7 +11,7 @@ public interface RideDao {
 	public RideInfo getRideById(long rideId) throws NotificationException;
 	public boolean addUserRideById(Long rideId, Long userId, Long waitTime);
 	public List<RideInfo> getAll();
-	
+	public boolean editRide(Long activityNum, String rideName, Long timePerEvent, Long entryTime, Long exitTime, Long maxCpty,  Long concRide);
 	
 	
 }

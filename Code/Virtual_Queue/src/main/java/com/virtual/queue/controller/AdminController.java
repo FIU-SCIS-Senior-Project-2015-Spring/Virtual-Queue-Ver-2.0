@@ -139,6 +139,32 @@ public class AdminController {
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 
 	}
+	@RequestMapping(value = "/adminEdit", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<String> adminEdit(
+//			@RequestParam(value = "ride_id") Long rideId,
+//			@RequestParam(value = "waitTime") Long waitTime,
+//			@RequestParam(value = "totalRecord") Long totalRecord,
+//			@RequestParam(value = "timePerEvent") Long timePerEvent,
+//			@RequestParam(value = "entryTime") Long entryTime,
+//			@RequestParam(value = "exitTime") Long exitTime,
+//			@RequestParam(value = "maxCpty") Long maxCpty,
+//			@RequestParam(value = "concRide") Long concRide) {
+			Long activityNum, String rideName, Long concRec, Long entryTime, Long exitTime, Long maxCpty,  Long interval,
+			HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("ride_id" + activityNum);
+		System.out.println(rideName);
+		System.out.println(maxCpty);
+		try {
+			  rideService.editRide(activityNum, rideName, concRec, entryTime, exitTime, maxCpty, interval);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		
+		return new ResponseEntity<String>("ok", HttpStatus.OK);
+
+	}
 
 	@RequestMapping(value = "/signout", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<String> signOut(
