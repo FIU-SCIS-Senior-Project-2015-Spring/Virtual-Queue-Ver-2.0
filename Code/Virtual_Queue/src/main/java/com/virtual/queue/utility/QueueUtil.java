@@ -72,8 +72,8 @@ public class QueueUtil {
 		long result = 0;
 		if (maxGuestPerEvent == 0)
 			return -1;
-		if (topbot) {
-			wait = count*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+		if (true) {
+			wait = (double)count*(((double)timePerEvent+(double)entryTime+(double)exitTime)/((double)maxGuestPerEvent* (double)maxConcurrentEvents));
 			result = (int) Math.ceil(wait);
 		} else {
 			wait = count*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
@@ -90,8 +90,8 @@ public class QueueUtil {
 		long result = 0;
 		if (maxGuestPerEvent == 0)
 			return -1;
-		if (topbot) {
-			wait = frontNum*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
+		if (true) {
+			wait = (double)frontNum*(((double)timePerEvent+(double)entryTime+(double)exitTime)/((double)maxGuestPerEvent* (double)maxConcurrentEvents));
 			result = (int) Math.ceil(wait);
 		} else {
 			wait = frontNum*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);

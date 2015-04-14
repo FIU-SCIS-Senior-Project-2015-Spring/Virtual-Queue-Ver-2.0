@@ -98,5 +98,19 @@ public class NotificationServiceImp implements NotificationService {
 		QueueDao dao = new QueueDaoImp();
 		return dao.pullAllInfo();
 	}
+	
+	@Override
+	public void sendSingleNotificationDequeued(String visitorName, String visitorEmail, String rideName, int timeToNotify) throws Exception{
+		NotificationHandler handler = new EmailNotificationHandlerImp();
+		NotificationInfo notInfo = new NotificationInfo();
+		// set data
+		notInfo.setEmail(visitorEmail);
+		notInfo.setName(visitorName);
+		//notInfo.setEmail(user.getEmail());
+		
+		notInfo.setMessage("Notification! Hello " +visitorName+ " in about " +timeToNotify+ " minutes the ride" +rideName+" will be ready for you! Please get to the entrance of the ride. Thank you!");
+		// notify user
+		handler.notifiyUser(notInfo);
+	}
 
 }

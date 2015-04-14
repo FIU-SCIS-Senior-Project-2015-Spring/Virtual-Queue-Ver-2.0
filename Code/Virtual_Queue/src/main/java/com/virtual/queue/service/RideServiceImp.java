@@ -3,10 +3,12 @@ package com.virtual.queue.service;
 import java.util.List;
 
 import com.virtual.queue.beans.NotificationInfo;
+import com.virtual.queue.beans.QueueInfo;
 import com.virtual.queue.beans.Ride;
 import com.virtual.queue.beans.RideInfo;
 import com.virtual.queue.beans.RuleCapacityBean;
 import com.virtual.queue.beans.User;
+import com.virtual.queue.beans.UserQueueInfo;
 import com.virtual.queue.builder.RuleBuilderImp;
 import com.virtual.queue.dao.QueueDao;
 import com.virtual.queue.dao.RideDao;
@@ -35,6 +37,9 @@ public class RideServiceImp implements RideService {
 
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	NotificationService notifService;
 public RideServiceImp(){}
 	
 	public RideServiceImp(RideDao rideD,QueueDao queueD,UserDao userD){
@@ -76,10 +81,29 @@ public RideServiceImp(){}
 
 	}
 	@Override
-	public void removeFromFront(Long rideId) {
+	public void removeFromFront(Long rideId) throws Exception  {
 		queueDao.removeFromFront(rideId);
-
 	}
+	
+	@Override
+	public void setUpToSendNotification(Long rideId) throws Exception {
+		RideInfo info = rideDao.getRideById(rideId);
+		
+		//send Notification happens after first # of visitors are dequeued
+		//find visitor position in line when there wait time is less then 10 mins
+		//replace the number 10 when you want to change when you want to send notification time
+		double tempPosition = 10 / (((double)info.getTimePerEvent() + (double)info.getEntryTime() + (double)info.getExitTime())/((double)info.getCapacity()*(double)info.getInterval()));
+		int position = (int) Math.ceil(tempPosition);
+		System.out.println("Position need to send notification to is up to: " + position);
+		List<UserQueueInfo> visitor = queueDao.getUserUpToPosition(rideId, position);
+		
+		for (UserQueueInfo temp : visitor){
+			//System.out.println(temp.getName());
+			notifService.sendSingleNotificationDequeued(temp.getName(), temp.getEmail(),  info.getrName(), 10);
+			System.out.println("Size of the visitor List is : " + visitor.size());
+		}
+	}
+	
 
 	@Override
 	public void updateRide(Ride ride) {
@@ -95,7 +119,7 @@ public RideServiceImp(){}
 	}
 
 	@Override
-	public boolean addUserRideById(Long rideId, Long userid) throws Exception {
+	public boolean addUserRideById(Long rideId, Long userid, boolean singleUser) throws Exception {
 
 		Validator validator = new ValidatorFactory().getRideValidator();
 		boolean result = false;
@@ -135,22 +159,22 @@ public RideServiceImp(){}
 
 			if (users != null && info != null && user!=null) {
 				// Check for biz rules
-				if (users.size() <= info.getCapacity()) {
-
+				//if (users.size() <= info.getCapacity()) {
+				if(singleUser){
+					
 					NotificationHandler handler = new EmailNotificationHandlerImp();
 					NotificationInfo notInfo = new NotificationInfo();
 					// set data
 					notInfo.setEmail(user.getEmail());
 					notInfo.setName(user.getFirstName() + " , "
 							+ user.getLastName());
-					notInfo.setEmail(user.getEmail());
-
-					double timeMin = info.getInterval() / 60.0;
-					notInfo.setMessage("Your "
+					//notInfo.setEmail(user.getEmail());
+					
+					notInfo.setMessage(user.getFirstName() + " has just Queued up to "
 							+ info.getrName()
-							+ " ride is due in :"
-							+ timeMin
-							+ "minute/s, Please, try to be on time and Enjoy your Ride :) ");
+							+ " ride and the estimated time is "
+							+ waitingTime
+							+ " minute/s, Please, try to be on time and Enjoy your Ride.");
 					// notify user
 					handler.notifiyUser(notInfo);
 

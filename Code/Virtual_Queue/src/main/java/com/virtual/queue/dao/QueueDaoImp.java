@@ -56,6 +56,9 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 	//query to find specific queue Id for specific visitor in a specific ride
 	private static final String GET_QUEUE_ID_FOR_VISITOR = "Select * From vqdatabase.queue Where visitor_id = ? AND activity_id = ?";
 	
+	//query to find front users for a specific user
+	private static final String GET_FRONT_VISITOR_FOR_RIDE_IN_QUEUE = "SELECT * FROM vqdatabase.queue q, vqdatabase.patron p, vqdatabase.visitor v Where p.patron_id = q.visitor_id and p.patron_id = v.visitor_id and q.activity_id = ?";
+	
 	public QueueDaoImp() {
 
 	}
@@ -689,7 +692,7 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 			
 			ResultSet result = statement.executeQuery();
 			result.next();
-			totalnum = result.getInt("totalnum");
+			totalnum = result.getInt("totalnum") + 1;
 
 			result.close();
 			statement.close();
@@ -720,5 +723,51 @@ public class QueueDaoImp extends BaseDao implements QueueDao {
 		return totalnum;
 	}
 	
-	
+	@Override
+	public List<UserQueueInfo> getUserUpToPosition (long rideId, int position){
+		List<UserQueueInfo> userList = new ArrayList<UserQueueInfo>();
+		Connection conn = getConnection();
+
+		try {
+
+			PreparedStatement statement = conn
+					.prepareStatement(GET_FRONT_VISITOR_FOR_RIDE_IN_QUEUE);
+
+			statement.setLong(1, rideId);
+			
+			ResultSet result = statement.executeQuery();
+			for(int x = 0; x < position; x++){
+			result.next();
+			UserQueueInfo visitor = new UserQueueInfo();
+			visitor.setName(result.getString("name_first") + " " + result.getString("name_last"));
+			visitor.setEmail(result.getString("contact_email"));
+			
+			userList.add(visitor); 
+			}
+			result.close();
+			statement.close();
+		} catch (SQLException e) {
+			// TODO need to add log4j output
+			e.printStackTrace();
+
+		} catch (Exception ex) {
+
+			// TODO need to add log4j output
+			ex.printStackTrace();
+
+		} finally {
+
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return userList;
+	}
 }

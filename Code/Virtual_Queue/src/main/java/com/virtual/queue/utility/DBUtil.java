@@ -35,14 +35,13 @@ public class DBUtil {
 		public static Connection getConnection() {
 
 			Connection connection=null;
-			 
 			
 			try {
 
 				Class.forName(DRIVER);
 				connection = (MySQLConnection) DriverManager.getConnection(URL,
 						USER, PASSWORD);
-
+				
 			} catch (ClassNotFoundException e) {
 
 				e.printStackTrace();

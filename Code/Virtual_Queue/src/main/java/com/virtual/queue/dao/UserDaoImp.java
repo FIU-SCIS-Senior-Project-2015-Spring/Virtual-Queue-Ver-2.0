@@ -31,7 +31,7 @@ public class UserDaoImp extends BaseDao implements UserDao {
 	private static String RESET_PASSWORD = "UPDATE VirtualQueueDB.VenueRegisteredUser SET user_password = ? WHERE user_id = ? ";
 
 	//private static String GET_USER_BY_ID = "Select * from VirtualQueueDB.VenueRegisteredUser where user_id=?";
-	private static String GET_USER_BY_ID = "Select * from vqdatabase.patron p, vqdatabase.visitor v where p.patron_id=v.visitor_id=?";
+	private static String GET_USER_BY_ID = "Select * from vqdatabase.patron p, vqdatabase.visitor v where p.patron_id=v.visitor_id and v.visitor_id = ?";
 			
 	private static final String DELETE_USER_FROM_QUEUE = "DELETE FROM VirtualQueueDB.UserQueue WHERE user_id= ? and queue_id=(Select myqueue_id From Ride where ride_id= ? )";
 	// add code and get code id.

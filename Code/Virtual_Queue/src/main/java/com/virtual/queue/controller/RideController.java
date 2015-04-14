@@ -125,7 +125,7 @@ public RideController(RideService service){
 
 		try {
 
-			return rideService.addUserRideById(rideId, userid);
+			return rideService.addUserRideById(rideId, userid, true);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -139,7 +139,7 @@ public RideController(RideService service){
 			@RequestParam(value = "userid") Long userId) {
 
 		try {
-			return rideService.addUserRideById(rideId, userId);
+			return rideService.addUserRideById(rideId, userId, true);
 
 		} catch (Exception e) {
 			e.printStackTrace();

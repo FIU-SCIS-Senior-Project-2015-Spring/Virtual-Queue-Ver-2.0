@@ -9,4 +9,5 @@ public interface NotificationService {
 	public List<UserQueueInfo> pullAllNotInfo();
 	public void notifyUser(long rideId) throws Exception;
 	public void notifyAllUsers() throws Exception;
+	public void sendSingleNotificationDequeued(String visitorName, String visitorEmail, String rideName, int timeToNotify) throws Exception;
 }

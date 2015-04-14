@@ -20,9 +20,13 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.virtual.queue.beans.RideInfo;
 import com.virtual.queue.beans.User;
+import com.virtual.queue.beans.UserQueueInfo;
+import com.virtual.queue.dao.QueueDao;
+import com.virtual.queue.dao.RideDao;
 import com.virtual.queue.request.LoginRequest;
 import com.virtual.queue.service.AdminService;
 import com.virtual.queue.service.LoginService;
+import com.virtual.queue.service.NotificationService;
 import com.virtual.queue.service.RideService;
 
 @Controller
@@ -38,6 +42,16 @@ public class AdminController {
 	
 	@Autowired
 	private RideService rideService;
+	
+	@Autowired
+	RideDao rideDao;
+	
+	@Autowired
+	NotificationService notifService;
+	
+	@Autowired
+	QueueDao queueDao;
+
 
 	@RequestMapping(value = "/signin", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<String> signIn(LoginRequest login,
@@ -96,7 +110,7 @@ public class AdminController {
 		}
 		for(int x=3; x<recnumber+3;x++){
 			try {
-				rideService.addUserRideById((long)simridename, (long)x);
+				rideService.addUserRideById((long)simridename, (long)x, false);
 
 				
 			} catch (Exception e) {
@@ -135,6 +149,13 @@ public class AdminController {
 			}	
 		}
 		
+		try {
+			rideService.setUpToSendNotification(rideId);
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 		
 		return new ResponseEntity<String>("ok", HttpStatus.OK);
 
