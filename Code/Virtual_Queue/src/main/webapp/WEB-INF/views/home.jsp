@@ -498,8 +498,8 @@
 </div>
 	</div>
 
-<div class="modal fade" id="adminEdit" role="dialog" data-backdrop="static" data-keyboard="false">
-		<div class="modal-dialog">
+<div class="modal fade" id="adminEdit" role="dialog" data-backdrop="static" data-keyboard="false" >
+		<div class="modal-dialog" style="width:750px;">
 			<div class="modal-content">
 				<form class="form-horizontal" id = "editRide" >
 					<div class="modal-header">
@@ -934,7 +934,7 @@
 <!-- Simulate Ride Table -->
 <div class="modal fade" id="simulate-rides" role="dialog" data-backdrop="static" data-keyboard="false">
 
-		<div class="modal-dialog">
+		<div class="modal-dialog" style="width:1050px;">
 			<div class="modal-content">
 				<form class="form-horizontal" id="adminForm">
 				
