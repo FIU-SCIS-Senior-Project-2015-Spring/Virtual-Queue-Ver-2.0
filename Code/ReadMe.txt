@@ -1,7 +1,6 @@
-Virtual_Queue: This file contains all the code for Virtual Queue v 2.0
-
-Database: This file contains the SQL database files.
-
+-Virtual_Queue: This file contains all the code for Virtual Queue v 2.0
+-Database: This file contains the SQL database files.
+- VQ-Final UserGuide: Contains both userguide and Installation manual.
 
 Virtual_Queue file structure:
 -HTML and Spring is located in Virtual_Queue\src\main\webapp\WEB-INF
