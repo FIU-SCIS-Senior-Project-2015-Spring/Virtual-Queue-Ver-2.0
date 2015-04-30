@@ -183,7 +183,7 @@
             return 'Search';
         },
         formatNoMatches: function () {
-            return 'No matching records found 4444';
+            return 'No matching records found';
         },
         formatRefresh: function () {
             return 'Refresh';
