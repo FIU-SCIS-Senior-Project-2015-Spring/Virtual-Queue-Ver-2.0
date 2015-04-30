@@ -1,1 +1,1 @@
-Poster ReadMe.txt
+This section includes the VQv2 Poster. For both Kenneth Kon and Michael Lazo. 
