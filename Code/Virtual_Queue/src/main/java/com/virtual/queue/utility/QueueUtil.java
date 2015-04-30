@@ -66,41 +66,36 @@ public class QueueUtil {
 		return wait;
 
 	}
-	public static long getWaitingTime2(int count, int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
-			boolean topbot) {
+	
+	//Used to find wait times for rides and for visitors
+	public static long getWaitingTime2(int count, int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime) {
 		double wait = 0;
 		long result = 0;
 		if (maxGuestPerEvent == 0)
 			return -1;
-		if (true) {
+			// count can be used for total number of people queued up to a ride or as a position, what position visitor is in
 			wait = (double)count*(((double)timePerEvent+(double)entryTime+(double)exitTime)/((double)maxGuestPerEvent* (double)maxConcurrentEvents));
 			result = (int) Math.ceil(wait);
-		} else {
-			wait = count*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
-			result = (int) Math.ceil(wait);
-		}
+
 
 		return result;
 
 	}
 	
-	public static long getDynWaitingTime(int frontNum, int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
-			boolean topbot) {
-		double wait = 0;
-		long result = 0;
-		if (maxGuestPerEvent == 0)
-			return -1;
-		if (true) {
-			wait = (double)frontNum*(((double)timePerEvent+(double)entryTime+(double)exitTime)/((double)maxGuestPerEvent* (double)maxConcurrentEvents));
-			result = (int) Math.ceil(wait);
-		} else {
-			wait = frontNum*(maxGuestPerEvent* maxConcurrentEvents)/(timePerEvent+entryTime+exitTime);
-			result = (int) Math.ceil(wait);
-		}
-
-		return result;
-
-	}
+//	public static long getDynWaitingTime(int frontNum, int maxGuestPerEvent,int maxConcurrentEvents, int timePerEvent, int entryTime, int exitTime,
+//			boolean topbot) {
+//		double wait = 0;
+//		long result = 0;
+//		if (maxGuestPerEvent == 0)
+//			return -1;
+//
+//			wait = (double)frontNum*(((double)timePerEvent+(double)entryTime+(double)exitTime)/((double)maxGuestPerEvent* (double)maxConcurrentEvents));
+//			result = (int) Math.ceil(wait);
+//
+//
+//		return result;
+//
+//	}
 	
 	
 }

@@ -498,17 +498,19 @@
 </div>
 	</div>
 
-<div class="modal fade" id="adminEdit" role="dialog" data-backdrop="static" data-keyboard="false">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form class="form-horizontal" id = "editRide" >
-					<div class="modal-header">
-						<h4>Edit Ride Information</h4>
-					</div>
+					
+					
+<div class="modal fade" id="adminEdit" role="dialog" data-backdrop="static" data-keyboard="false" >
+  <div class="modal-dialog" style="width:750px;">
+   <div class="modal-content">
+    <form class="form-horizontal" id = "editRide" >
+     <div class="modal-header">
+      <h4>Edit Ride Information</h4>
+     </div>
 
-					<div class="modal-body">
-					 
-						<div class="form-group">
+     <div class="modal-body">
+      
+      <div class="form-group">
 					
 							<label for="numofRecords" class="col-lg-2 control-label">Ride ID:</label>
 							<div class="col-lg-10">
@@ -934,37 +936,37 @@
 <!-- Simulate Ride Table -->
 <div class="modal fade" id="simulate-rides" role="dialog" data-backdrop="static" data-keyboard="false">
 
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<form class="form-horizontal" id="adminForm">
-				
-							
-				<div class="navbar navbar-inverse navbar-static-top">
-		<div class="container-fluid">
+  <div class="modal-dialog" style="width:1050px;">
+   <div class="modal-content">
+    <form class="form-horizontal" id="adminForm">
+    
+       
+    <div class="navbar navbar-inverse navbar-static-top">
+  <div class="container-fluid">
 
-			<a href="#" class="navbar-brand"> Simulate Rides </a>
+   <a href="#" class="navbar-brand"> Simulate Rides </a>
 
-			<button class="navbar-toggle" data-toggle="collapse"
-				data-target=".navHeaderCollapse">
-				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
+   <button class="navbar-toggle" data-toggle="collapse"
+    data-target=".navHeaderCollapse">
+    <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+     class="icon-bar"></span>
+   </button>
 
-			<div class="collapse navbar-collapse navHeaderCollapse">
+   <div class="collapse navbar-collapse navHeaderCollapse">
 
-				<ul class="nav navbar-nav navbar-right">
+    <ul class="nav navbar-nav navbar-right">
 
-					<li class="active"><a href="#"> Home </a></li>		
-					<li><a href="#search" data-toggle="modal" id = "search"> Search </a></li>			
-					<li><a href="#logout-admin" data-toggle="modal" id="logout-admin"><span class="glyphicon glyphicon-off"></span> Logout </a></li>
+     <li class="active"><a href="#"> Home </a></li>  
+     <li><a href="#search" data-toggle="modal" id = "search"> Search </a></li>   
+     <li><a href="#logout-admin" data-toggle="modal" id="logout-admin"><span class="glyphicon glyphicon-off"></span> Logout </a></li>
 
-				</ul>
+    </ul>
 
-			</div>
+   </div>
 
-		</div>
+  </div>
 
-	</div>	
+ </div>
 				
 					<div class="modal-body">
 
@@ -1605,7 +1607,7 @@ function operateSimulateRide(value, row, index) {
         '<a class="disable" href="javascript:void(0)" title="Dequeue Records" id = "dequeuerecords">',
         	'<i class="glyphicon glyphicon-ban-circle"></i>',
     	'</a>',       
-         '<a class="enable" href="javascript:void(0)" title="Enable">',
+         '<a class="enable" href="javascript:void(0)" title="Edit">',
             '<i class="glyphicon glyphicon-ok-circle"></i>',
         '</a>'
     ].join('');
@@ -1970,9 +1972,9 @@ window.operateSimulateRideEvent = {
 				
 				var timePE=String(parsingR2.timePerEvent);
 				
-				var st=String(parsingR2.startTime);
+				var st=String(parsingR2.entryTime);
 				
-				var et=String(parsingR2.endTime);
+				var et=String(parsingR2.exitTime);
 				
 				var capR=String(parsingR2.capacity); //stores the max capacity per ride
 				
@@ -1982,6 +1984,13 @@ window.operateSimulateRideEvent = {
 				
 				$('#update-activityNum').val(addingR2) ;
 				$('#update-rideName').val(nameT) ;
+				$('#update-concRec').val(timePE) ;
+				
+				$('#update-entryTime').val(st) ;
+				$('#update-exitTime').val(et) ;
+				$('#update-maxCpty').val(capR) ;
+				$('#update-interval').val(intervalR) ;
+
 				
 				$('#simulate-rides').modal('hide');
 		    	$('#adminEdit').modal('show');

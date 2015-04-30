@@ -136,7 +136,16 @@ public class AdminController {
 //		System.out.println("Ride num: "+ simridename);
 		long totalCap = maxCpty * interval;
 		if(totalRecord <= totalCap){
-			return new ResponseEntity<String>("Not enough patrons to fill ride capacity, check again soon!",HttpStatus.BAD_REQUEST);
+			//return new ResponseEntity<String>("Not enough patrons to fill ride capacity, check again soon!",HttpStatus.BAD_REQUEST);
+			for(Long x=totalCap; x> 0;x--){
+				try {
+					  rideService.removeFromFront(rideId);
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
 		}
 		
 		for(Long x=totalCap; x> 0;x--){

@@ -65,7 +65,7 @@ public RideServiceImp(){}
 			info.setTotalRecord(count);
 			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
 					//interval, true);
-			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime());
 			
 			//long waitingTime = 5;
 			info.setWaitingTime(waitingTime);
@@ -96,11 +96,14 @@ public RideServiceImp(){}
 		int position = (int) Math.ceil(tempPosition);
 		System.out.println("Position need to send notification to is up to: " + position);
 		List<UserQueueInfo> visitor = queueDao.getUserUpToPosition(rideId, position);
-		
+		int timeLeft = 1;
 		for (UserQueueInfo temp : visitor){
 			//System.out.println(temp.getName());
-			notifService.sendSingleNotificationDequeued(temp.getName(), temp.getEmail(),  info.getrName(), 10);
+			double waitTime = timeLeft*(((double)info.getTimePerEvent() + (double)info.getEntryTime() + (double)info.getExitTime())/((double)info.getCapacity()*(double)info.getInterval()));
+			int waitTime2 = (int) Math.ceil(waitTime);
+			notifService.sendSingleNotificationDequeued(temp.getName(), temp.getEmail(),  info.getrName(), waitTime2);
 			System.out.println("Size of the visitor List is : " + visitor.size());
+			timeLeft++;
 		}
 	}
 	
@@ -139,7 +142,7 @@ public RideServiceImp(){}
 			info.setTotalRecord(count);
 			//long waitingTime = QueueUtil.getWaitingTime(count, capacity,
 					//interval, true);
-			long waitingTime = QueueUtil.getWaitingTime2(count, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime() , true);
+			long waitingTime = QueueUtil.getWaitingTime2(count+1, capacity, interval, info.getTimePerEvent(), info.getEntryTime(), info.getExitTime());
 			
 				result = rideDao.addUserRideById(rideId, userid, waitingTime);
 			/*
@@ -222,8 +225,8 @@ public RideServiceImp(){}
 			int capacity = info.getCapacity();
 			int interval = info.getInterval();
 			
-			long waitingTime = QueueUtil.getDynWaitingTime(numFront, capacity,
-					bean.getRide().getInterval(), bean.getRide().getTimePerEvent(), bean.getRide().getEntryTime(), bean.getRide().getExitTime() , true);
+			long waitingTime = QueueUtil.getWaitingTime2(numFront, capacity,
+					bean.getRide().getInterval(), bean.getRide().getTimePerEvent(), bean.getRide().getEntryTime(), bean.getRide().getExitTime());
 			// waitingTime = 5;
 			//info.setWaitingTime(waitingTime);
 			info.setInterval((int)waitingTime);
